@@ -1,4 +1,5 @@
 package com.logobing.repository;
+import org.springframework.data.repository.query.Param;
 
 import com.logobing.model.GameParticipation;
 import com.logobing.model.Player;
