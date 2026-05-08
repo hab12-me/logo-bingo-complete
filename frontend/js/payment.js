@@ -9,9 +9,6 @@ const PaymentSystem = (() => {
     let currentPlayerId = null;
     let currentBalance = 0;
     
-    /**
-     * Initialize payment system
-     */
     function init(playerId) {
         currentPlayerId = playerId;
         console.log("✅ Payment system initialized for player:", playerId);
@@ -19,9 +16,6 @@ const PaymentSystem = (() => {
         addWalletFloatingButton();
     }
     
-    /**
-     * Add floating wallet button
-     */
     function addWalletFloatingButton() {
         if (document.getElementById("floatingWalletBtn")) return;
         
@@ -50,17 +44,11 @@ const PaymentSystem = (() => {
         document.body.appendChild(btn);
     }
     
-    /**
-     * Update floating balance display
-     */
     function updateFloatingBalance(balance) {
         const span = document.getElementById("floatingBalance");
         if (span) span.textContent = balance.toFixed(2);
     }
     
-    /**
-     * Refresh wallet balance from server
-     */
     async function refreshWalletBalance() {
         try {
             const response = await fetch(`${BACKEND_URL}/payment/wallet`, {
@@ -70,11 +58,8 @@ const PaymentSystem = (() => {
             if (data.status === "success" && data.data) {
                 currentBalance = data.data.balance || 0;
                 updateFloatingBalance(currentBalance);
-                
-                // Also update lobby wallet display
                 const walletEl = document.getElementById("lobby-wallet-value");
                 if (walletEl) walletEl.textContent = currentBalance.toFixed(2);
-                
                 return currentBalance;
             }
             return 0;
@@ -84,9 +69,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Show wallet menu
-     */
     function showWalletMenu() {
         const menuHtml = `
             <div id="walletMenu" class="payment-modal">
@@ -101,15 +83,9 @@ const PaymentSystem = (() => {
                             <div class="balance-amount">${currentBalance.toFixed(2)} ETB</div>
                         </div>
                         <div class="wallet-buttons">
-                            <button class="wallet-action-btn deposit-btn" onclick="PaymentSystem.showDepositModal()">
-                                💰 Deposit
-                            </button>
-                            <button class="wallet-action-btn withdraw-btn" onclick="PaymentSystem.showWithdrawModal()">
-                                💸 Withdraw
-                            </button>
-                            <button class="wallet-action-btn history-btn" onclick="PaymentSystem.showTransactionHistory()">
-                                📜 History
-                            </button>
+                            <button class="wallet-action-btn deposit-btn" onclick="PaymentSystem.showDepositModal()">💰 Deposit</button>
+                            <button class="wallet-action-btn withdraw-btn" onclick="PaymentSystem.showWithdrawModal()">💸 Withdraw</button>
+                            <button class="wallet-action-btn history-btn" onclick="PaymentSystem.showTransactionHistory()">📜 History</button>
                         </div>
                         <div class="wallet-info">
                             <small>🏦 Admin Telebirr: <strong>0931721793</strong></small><br>
@@ -129,9 +105,6 @@ const PaymentSystem = (() => {
         setTimeout(() => modal.classList.add("show"), 10);
     }
     
-    /**
-     * Close wallet menu
-     */
     function closeWalletMenu() {
         const modal = document.getElementById("walletMenu");
         if (modal) {
@@ -140,9 +113,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Submit deposit request
-     */
     async function submitDeposit(amount, transactionId, senderPhoneNumber) {
         try {
             const response = await fetch(`${BACKEND_URL}/payment/deposit/request`, {
@@ -165,9 +135,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Submit withdrawal request
-     */
     async function submitWithdrawal(amount, recipientPhoneNumber, recipientName) {
         try {
             const response = await fetch(`${BACKEND_URL}/payment/withdraw/request`, {
@@ -190,9 +157,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Get transaction history
-     */
     async function getTransactionHistory() {
         try {
             const response = await fetch(`${BACKEND_URL}/payment/transactions`, {
@@ -206,9 +170,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Show deposit modal
-     */
     function showDepositModal() {
         closeWalletMenu();
         
@@ -289,9 +250,6 @@ const PaymentSystem = (() => {
         });
     }
     
-    /**
-     * Handle deposit form submission
-     */
     async function handleDepositSubmit() {
         const amount = parseFloat(document.getElementById("depositAmount").value);
         const transactionId = document.getElementById("transactionId").value.trim();
@@ -333,9 +291,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Close deposit modal
-     */
     function closeDepositModal() {
         const modal = document.getElementById("depositModal");
         if (modal) {
@@ -344,9 +299,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Show withdrawal modal
-     */
     function showWithdrawModal() {
         closeWalletMenu();
         
@@ -359,8 +311,7 @@ const PaymentSystem = (() => {
                     </div>
                     <div class="payment-modal-body">
                         <div class="warning-box">
-                            ⚠️ <strong>Manual Processing:</strong> Withdrawals are processed manually by admin.
-                            Funds will be sent within 5-30 minutes.
+                            ⚠️ <strong>Manual Processing:</strong> Withdrawals are processed manually by admin. Funds will be sent within 5-30 minutes.
                         </div>
                         
                         <div class="balance-display-small">
@@ -406,9 +357,6 @@ const PaymentSystem = (() => {
         });
     }
     
-    /**
-     * Handle withdrawal form submission
-     */
     async function handleWithdrawSubmit() {
         const amount = parseFloat(document.getElementById("withdrawAmount").value);
         const recipientPhone = document.getElementById("recipientPhone").value.trim();
@@ -466,9 +414,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Close withdrawal modal
-     */
     function closeWithdrawModal() {
         const modal = document.getElementById("withdrawModal");
         if (modal) {
@@ -477,9 +422,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Show transaction history
-     */
     async function showTransactionHistory() {
         const transactions = await getTransactionHistory();
         
@@ -527,9 +469,6 @@ const PaymentSystem = (() => {
         setTimeout(() => modal.classList.add("show"), 10);
     }
     
-    /**
-     * Close history modal
-     */
     function closeHistoryModal() {
         const modal = document.getElementById("historyModal");
         if (modal) {
@@ -538,9 +477,6 @@ const PaymentSystem = (() => {
         }
     }
     
-    /**
-     * Remove existing modals
-     */
     function removeExistingModal() {
         const modals = ["walletMenu", "depositModal", "withdrawModal", "historyModal"];
         modals.forEach(id => {
@@ -549,9 +485,6 @@ const PaymentSystem = (() => {
         });
     }
     
-    /**
-     * Add payment system styles
-     */
     function addPaymentStyles() {
         if (document.getElementById("paymentStyles")) return;
         
@@ -573,10 +506,7 @@ const PaymentSystem = (() => {
                     transition: all 0.3s ease;
                     backdrop-filter: blur(5px);
                 }
-                .payment-modal.show {
-                    opacity: 1;
-                    visibility: visible;
-                }
+                .payment-modal.show { opacity: 1; visibility: visible; }
                 .payment-modal-content {
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     border-radius: 24px;
@@ -598,11 +528,7 @@ const PaymentSystem = (() => {
                     padding: 20px 24px;
                     border-bottom: 1px solid rgba(255,255,255,0.2);
                 }
-                .payment-modal-header h2 {
-                    margin: 0;
-                    color: white;
-                    font-size: 1.5rem;
-                }
+                .payment-modal-header h2 { margin: 0; color: white; font-size: 1.5rem; }
                 .close-modal {
                     background: none;
                     border: none;
@@ -610,12 +536,9 @@ const PaymentSystem = (() => {
                     font-size: 32px;
                     cursor: pointer;
                     opacity: 0.7;
-                    transition: opacity 0.2s;
                 }
                 .close-modal:hover { opacity: 1; }
-                .payment-modal-body {
-                    padding: 24px;
-                }
+                .payment-modal-body { padding: 24px; }
                 .balance-display {
                     text-align: center;
                     padding: 24px;
@@ -623,17 +546,8 @@ const PaymentSystem = (() => {
                     border-radius: 20px;
                     margin-bottom: 24px;
                 }
-                .balance-label {
-                    font-size: 14px;
-                    color: rgba(255,255,255,0.8);
-                    margin-bottom: 8px;
-                }
-                .balance-amount {
-                    font-size: 42px;
-                    font-weight: bold;
-                    color: #ffeb3b;
-                    font-family: monospace;
-                }
+                .balance-label { font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 8px; }
+                .balance-amount { font-size: 42px; font-weight: bold; color: #ffeb3b; font-family: monospace; }
                 .balance-display-small {
                     background: rgba(255,255,255,0.12);
                     padding: 15px;
@@ -643,11 +557,7 @@ const PaymentSystem = (() => {
                     color: white;
                     font-size: 18px;
                 }
-                .wallet-buttons {
-                    display: flex;
-                    gap: 12px;
-                    margin-bottom: 24px;
-                }
+                .wallet-buttons { display: flex; gap: 12px; margin-bottom: 24px; }
                 .wallet-action-btn {
                     flex: 1;
                     padding: 14px;
@@ -662,18 +572,8 @@ const PaymentSystem = (() => {
                 .deposit-btn { background: #2ecc71; color: white; }
                 .withdraw-btn { background: #e74c3c; color: white; }
                 .history-btn { background: #3498db; color: white; }
-                .wallet-info {
-                    text-align: center;
-                    color: rgba(255,255,255,0.7);
-                    font-size: 12px;
-                    line-height: 1.6;
-                }
-                .telebirr-info-card {
-                    background: rgba(255,255,255,0.12);
-                    border-radius: 16px;
-                    padding: 16px;
-                    margin-bottom: 24px;
-                }
+                .wallet-info { text-align: center; color: rgba(255,255,255,0.7); font-size: 12px; }
+                .telebirr-info-card { background: rgba(255,255,255,0.12); border-radius: 16px; padding: 16px; margin-bottom: 24px; }
                 .info-row {
                     display: flex;
                     justify-content: space-between;
@@ -685,44 +585,15 @@ const PaymentSystem = (() => {
                 .info-row:last-child { border-bottom: none; }
                 .info-label { font-weight: bold; }
                 .info-value { font-family: monospace; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px; }
-                .copy-btn {
-                    background: #3498db;
-                    border: none;
-                    padding: 6px 12px;
-                    border-radius: 8px;
-                    color: white;
-                    cursor: pointer;
-                    font-size: 12px;
-                }
-                .instruction-box {
-                    background: rgba(255,255,255,0.1);
-                    border-radius: 16px;
-                    padding: 16px;
-                    margin-bottom: 24px;
-                    color: white;
-                }
+                .copy-btn { background: #3498db; border: none; padding: 6px 12px; border-radius: 8px; color: white; cursor: pointer; font-size: 12px; }
+                .instruction-box { background: rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; margin-bottom: 24px; color: white; }
                 .instruction-box h4 { margin: 0 0 12px 0; }
                 .instruction-box ol { margin: 0; padding-left: 20px; }
                 .instruction-box li { margin: 8px 0; }
                 .highlight { color: #ffeb3b; }
-                .warning-box {
-                    background: rgba(231,76,60,0.25);
-                    border-left: 4px solid #e74c3c;
-                    padding: 14px;
-                    border-radius: 10px;
-                    margin-bottom: 20px;
-                    color: white;
-                    font-size: 13px;
-                }
-                .payment-form .form-group {
-                    margin-bottom: 18px;
-                }
-                .payment-form label {
-                    display: block;
-                    color: white;
-                    margin-bottom: 8px;
-                    font-weight: bold;
-                }
+                .warning-box { background: rgba(231,76,60,0.25); border-left: 4px solid #e74c3c; padding: 14px; border-radius: 10px; margin-bottom: 20px; color: white; font-size: 13px; }
+                .payment-form .form-group { margin-bottom: 18px; }
+                .payment-form label { display: block; color: white; margin-bottom: 8px; font-weight: bold; }
                 .payment-form input {
                     width: 100%;
                     padding: 14px;
@@ -732,24 +603,9 @@ const PaymentSystem = (() => {
                     box-sizing: border-box;
                     background: white;
                 }
-                .payment-form small {
-                    display: block;
-                    color: rgba(255,255,255,0.7);
-                    font-size: 11px;
-                    margin-top: 6px;
-                }
-                .info-note {
-                    background: rgba(46,204,113,0.2);
-                    padding: 12px;
-                    border-radius: 10px;
-                    margin: 20px 0;
-                    color: white;
-                    font-size: 13px;
-                    text-align: center;
-                }
-                .info-note.warning {
-                    background: rgba(231,76,60,0.2);
-                }
+                .payment-form small { display: block; color: rgba(255,255,255,0.7); font-size: 11px; margin-top: 6px; }
+                .info-note { background: rgba(46,204,113,0.2); padding: 12px; border-radius: 10px; margin: 20px 0; color: white; font-size: 13px; text-align: center; }
+                .info-note.warning { background: rgba(231,76,60,0.2); }
                 .submit-payment-btn {
                     width: 100%;
                     padding: 16px;
@@ -762,15 +618,10 @@ const PaymentSystem = (() => {
                     cursor: pointer;
                     transition: transform 0.2s;
                 }
-                .submit-payment-btn.withdraw-btn {
-                    background: linear-gradient(135deg, #e74c3c, #c0392b);
-                }
+                .submit-payment-btn.withdraw-btn { background: linear-gradient(135deg, #e74c3c, #c0392b); }
                 .submit-payment-btn:active { transform: scale(0.98); }
                 .submit-payment-btn:disabled { opacity: 0.6; transform: none; }
-                .transactions-list {
-                    max-height: 450px;
-                    overflow-y: auto;
-                }
+                .transactions-list { max-height: 450px; overflow-y: auto; }
                 .transaction-item {
                     display: flex;
                     align-items: center;
@@ -788,25 +639,13 @@ const PaymentSystem = (() => {
                 .transaction-amount { font-weight: bold; font-size: 16px; }
                 .transaction-amount.positive { color: #2ecc71; }
                 .transaction-amount.negative { color: #e74c3c; }
-                .no-transactions {
-                    text-align: center;
-                    padding: 50px;
-                    color: rgba(255,255,255,0.7);
-                }
-                .history-footer {
-                    text-align: center;
-                    padding: 16px;
-                    color: rgba(255,255,255,0.6);
-                    font-size: 11px;
-                    border-top: 1px solid rgba(255,255,255,0.1);
-                    margin-top: 16px;
-                }
+                .no-transactions { text-align: center; padding: 50px; color: rgba(255,255,255,0.7); }
+                .history-footer { text-align: center; padding: 16px; color: rgba(255,255,255,0.6); font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 16px; }
             </style>
         `;
         document.head.insertAdjacentHTML("beforeend", styles);
     }
     
-    // Public API
     return {
         init,
         refreshWalletBalance,
@@ -817,7 +656,6 @@ const PaymentSystem = (() => {
     };
 })();
 
-// Global helper functions
 function closeWalletMenu() { 
     const modal = document.getElementById("walletMenu");
     if (modal) {
@@ -855,5 +693,4 @@ function copyToClipboard(text) {
     showPopupMessage("✅ Copied to clipboard!");
 }
 
-// Make PaymentSystem global
 window.PaymentSystem = PaymentSystem;
