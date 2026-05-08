@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logo Bing Bingo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,12 +35,11 @@
             border-radius: 12px;
             padding: 15px;
             text-align: center;
-            min-width: 100px;
         }
         .lobby-icon { font-size: 24px; margin-bottom: 5px; }
         .lobby-label { font-size: 12px; color: #888; margin-bottom: 5px; }
         .lobby-value { font-size: 28px; font-weight: bold; color: #00d4ff; }
-        #lobby-timer-value { color: #ff6b6b; font-size: 36px; }
+        #lobby-timer-value { color: #ff6b6b; }
         
         /* Cards Grid */
         #lobby-card-ids-container {
@@ -67,9 +66,7 @@
             transition: transform 0.2s;
         }
         .card-button:hover { transform: scale(1.05); }
-        .locked-by-me { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-        .locked-by-other { background: linear-gradient(135deg, #e74c3c, #c0392b); opacity: 0.7; }
-        .available { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .selected-card { background: linear-gradient(135deg, #2ecc71, #27ae60); box-shadow: 0 0 15px rgba(46,204,113,0.5); }
         
         /* Card Preview */
         #lobby-card-container {
@@ -95,11 +92,6 @@
             font-size: 18px;
             font-weight: bold;
             color: #00d4ff;
-        }
-        .lobby-card-id {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #888;
         }
         
         /* Playroom Styles */
@@ -175,8 +167,7 @@
             font-size: 14px;
             font-weight: bold;
         }
-        .master-cell.called-new { background: #2ecc71; color: #000; }
-        .master-cell.called-old { background: #e74c3c; }
+        .master-cell.called { background: #2ecc71; color: #000; }
         
         .playroom-sidebar {
             flex: 1;
@@ -185,26 +176,6 @@
             border-radius: 16px;
             padding: 20px;
         }
-        #playroom-status-box {
-            background: rgba(0,0,0,0.5);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #fff;
-            border-top-color: #00d4ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
         .playroom-current-call {
             background: linear-gradient(135deg, #667eea, #764ba2);
             padding: 20px;
@@ -284,7 +255,6 @@
             cursor: pointer;
         }
         
-        /* Popup */
         .popup {
             position: fixed;
             bottom: 20px;
@@ -297,7 +267,6 @@
             z-index: 1000;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
             .lobby-header, .playroom-header { flex-direction: column; }
             #lobby-card-ids-container { grid-template-columns: repeat(5, 1fr); }
@@ -305,32 +274,23 @@
     </style>
 </head>
 <body>
-    <script src="js/telegram-web-app.js"></script>
-    <script src="js/sockjs.min.js"></script>
-    <script src="js/stomp.min.js"></script>
-    <script src="js/confetti.browser.min.js"></script>
-    <script src="js/client-session.js"></script>
-    <script src="js/grid-master.js"></script>
-    <script src="js/utility.js"></script>
-    <script src="js/payment.js"></script>
-
     <!-- LOBBY -->
     <div id="lobby">
         <div class="lobby-header">
             <div class="lobby-info-box">
                 <div class="lobby-icon">⏳</div>
                 <div class="lobby-label">Time</div>
-                <div class="lobby-value" id="lobby-timer-value">-</div>
+                <div class="lobby-value" id="lobby-timer-value">30</div>
             </div>
             <div class="lobby-info-box">
                 <div class="lobby-icon">👥</div>
                 <div class="lobby-label">Players</div>
-                <div class="lobby-value" id="lobby-player-count">-</div>
+                <div class="lobby-value" id="lobby-player-count">0</div>
             </div>
             <div class="lobby-info-box">
                 <div class="lobby-icon">💰</div>
                 <div class="lobby-label">Wallet</div>
-                <div class="lobby-value" id="lobby-wallet-value">-</div>
+                <div class="lobby-value" id="lobby-wallet-value">100</div>
             </div>
             <div class="lobby-info-box">
                 <div class="lobby-icon">🎲</div>
@@ -345,26 +305,10 @@
     <!-- PLAYROOM -->
     <div id="playroom" class="hidden">
         <div class="playroom-header">
-            <div class="playroom-info-box">
-                <div>👥</div>
-                <div>Players</div>
-                <div id="playroom-players">-</div>
-            </div>
-            <div class="playroom-info-box">
-                <div>💰</div>
-                <div>Jackpot</div>
-                <div id="playroom-reward">-</div>
-            </div>
-            <div class="playroom-info-box">
-                <div>🎲</div>
-                <div>Bet</div>
-                <div id="playroom-bet-value">10</div>
-            </div>
-            <div class="playroom-info-box">
-                <div>🔔</div>
-                <div>Called</div>
-                <div id="playroom-call-count">-</div>
-            </div>
+            <div class="playroom-info-box"><div>👥</div><div>Players</div><div id="playroom-players">1</div></div>
+            <div class="playroom-info-box"><div>💰</div><div>Jackpot</div><div id="playroom-reward">500</div></div>
+            <div class="playroom-info-box"><div>🎲</div><div>Bet</div><div id="playroom-bet-value">10</div></div>
+            <div class="playroom-info-box"><div>🔔</div><div>Called</div><div id="playroom-call-count">0</div></div>
         </div>
         <div class="playroom-main">
             <div class="playroom-board">
@@ -378,7 +322,6 @@
                 <div class="playroom-master-grid" id="master-grid"></div>
             </div>
             <div class="playroom-sidebar">
-                <div id="playroom-status-box">SHUFFLING <span class="loader"></span></div>
                 <div class="playroom-current-call">
                     <div>Current Call</div>
                     <div class="ball" id="last-call">-</div>
@@ -391,176 +334,157 @@
     </div>
 
     <div class="popup" id="game-popup"><div class="popup-message" id="popup-message"></div></div>
-    <div id="processing-popup" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#333; padding:20px; border-radius:16px; display:none; z-index:1001;">
-        <div>🔍 Verifying Bingo Claim...</div>
-        <div class="spinner" style="width:20px; height:20px; border:2px solid #fff; border-top-color:#f39c12; border-radius:50%; animation:spin 1s linear infinite; margin:10px auto;"></div>
-    </div>
-    <div class="modal" id="winnerModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:2000;">
-        <div style="background:linear-gradient(135deg,#667eea,#764ba2); border-radius:20px; padding:30px; text-align:center; max-width:500px;">
-            <h2>🎉 BINGO! 🎉</h2>
-            <div id="winner-summary"></div>
-            <div id="winners-container" style="max-height:300px; overflow-y:auto; margin:15px 0;"></div>
-            <button id="close-modal-button" style="padding:12px 24px; background:#f39c12; border:none; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">Close</button>
-        </div>
-    </div>
 
     <script>
-        // Global game variables
-        let lockedCardId = null;
-        let myCardGrid = null;
-        let currentRoomState = null;
-        let bingoClaimed = false;
-        let isClaiming = false;
+        // Game State
+        let selectedCardId = null;
+        let myCards = [];
+        let gameActive = false;
+        let calledNumbers = [];
+        let callInterval;
+        let timer = 30;
+        let timerInterval;
         
-        // Get elements
-        const lobby = document.getElementById('lobby');
-        const playroom = document.getElementById('playroom');
-        const lobbyHeader = document.getElementById('lobby-header');
+        // Card data - 500 random bingo cards
+        let allCards = [];
         
-        function showLobby() {
-            lobby.classList.remove('hidden');
-            playroom.classList.add('hidden');
-            if (lobbyHeader) lobbyHeader.style.display = 'flex';
-            buildCardButtonsGrid();
-        }
-        
-        function showPlayroom(card) {
-            lobby.classList.add('hidden');
-            playroom.classList.remove('hidden');
-            buildMasterGrid();
-            if (card) {
-                myCardGrid = card.grid;
-                lockedCardId = card.id;
-                renderBingoCard(card);
+        // Generate 500 random bingo cards
+        function generateAllCards() {
+            for (let cardNum = 1; cardNum <= 500; cardNum++) {
+                const card = {
+                    id: cardNum,
+                    grid: generateCardGrid()
+                };
+                allCards.push(card);
             }
         }
         
-        function buildCardButtonsGrid() {
-            const numberOfCards = parseInt(localStorage.getItem('numberOfCards')) || 500;
+        function generateCardGrid() {
+            const grid = [[],[],[],[],[]];
+            // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
+            for (let col = 0; col < 5; col++) {
+                const start = col * 15 + 1;
+                const end = start + 14;
+                const numbers = [];
+                for (let i = start; i <= end; i++) numbers.push(i);
+                // Shuffle
+                for (let i = numbers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+                }
+                for (let row = 0; row < 5; row++) {
+                    if (row === 2 && col === 2) {
+                        grid[row][col] = 0;
+                    } else {
+                        grid[row][col] = numbers[row];
+                    }
+                }
+            }
+            return grid;
+        }
+        
+        // Build card buttons grid
+        function buildCardButtons() {
             const container = document.getElementById('lobby-card-ids-container');
-            if (!container) return;
             container.innerHTML = '';
-            
-            for (let i = 1; i <= numberOfCards; i++) {
+            for (let i = 1; i <= 500; i++) {
                 const btn = document.createElement('button');
-                btn.className = 'card-button available';
+                btn.className = 'card-button';
                 btn.textContent = i;
-                btn.setAttribute('data-card-id', i);
-                btn.onclick = () => lockCard(i);
+                btn.onclick = () => selectCard(i);
                 container.appendChild(btn);
             }
         }
         
-        async function lockCard(cardId) {
-            const myId = localStorage.getItem('myId');
-            try {
-                const response = await fetch(`${BACKEND_URL}/game/lockCard?cardId=${cardId}`, {
-                    method: 'POST',
-                    headers: { 'User-Id': myId }
-                });
-                const data = await response.json();
-                if (data.status === 'success' && data.data) {
-                    highlightCardButton(cardId, 'locked-by-me');
-                    if (lockedCardId && lockedCardId !== cardId) {
-                        highlightCardButton(lockedCardId, 'available');
-                    }
-                    lockedCardId = cardId;
-                    renderLobbyCardPreview(data.data);
-                    showPopupMessage(`✅ Card ${cardId} locked!`);
-                } else {
-                    showPopupMessage(data.message || 'Failed to lock card');
-                }
-                if (data.wallet) updateWalletDisplay(data.wallet);
-            } catch(err) {
-                showPopupMessage('Network error');
-            }
-        }
-        
-        function highlightCardButton(cardId, className) {
-            const btn = document.querySelector(`.card-button[data-card-id="${cardId}"]`);
-            if (btn) {
-                btn.classList.remove('locked-by-me', 'locked-by-other', 'available');
-                btn.classList.add(className);
-            }
-        }
-        
-        function renderLobbyCardPreview(card) {
-            const container = document.getElementById('lobby-card-container');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            let grid;
-            if (typeof card.grid === 'string') grid = JSON.parse(card.grid);
-            else grid = card.grid;
-            
-            const table = document.createElement('div');
-            table.className = 'lobby-table';
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'lobby-table-cell';
-                    const val = grid[row][col];
-                    cell.textContent = val === 0 ? '⭐' : val;
-                    table.appendChild(cell);
-                }
-            }
-            container.appendChild(table);
-            const idDiv = document.createElement('div');
-            idDiv.className = 'lobby-card-id';
-            idDiv.textContent = `Board #: ${card.id}`;
-            container.appendChild(idDiv);
-        }
-        
-        function renderBingoCard(card) {
-            const container = document.getElementById('playroom-card-container');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            let grid;
-            if (typeof card.grid === 'string') grid = JSON.parse(card.grid);
-            else grid = card.grid;
-            
-            const bingoCard = document.createElement('div');
-            bingoCard.className = 'bingo-card-grid';
-            
-            const colors = { B: '#2ecc71', I: '#f39c12', N: '#3498db', G: '#e74c3c', O: '#9b59b6' };
-            ['B','I','N','G','O'].forEach(letter => {
-                const header = document.createElement('div');
-                header.className = 'header-cell';
-                header.textContent = letter;
-                header.style.backgroundColor = colors[letter];
-                bingoCard.appendChild(header);
+        // Select a card
+        function selectCard(cardId) {
+            // Remove selected class from all
+            document.querySelectorAll('.card-button').forEach(btn => {
+                btn.classList.remove('selected-card');
             });
+            // Add selected class to clicked
+            const btn = document.querySelector(`.card-button[onclick="selectCard(${cardId})"]`);
+            if (btn) btn.classList.add('selected-card');
             
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const num = grid[row][col];
-                    const cell = document.createElement('div');
-                    if (num === 0) {
-                        cell.className = 'free-cell';
-                        cell.textContent = '⭐';
-                    } else {
-                        cell.className = 'num-cell';
-                        cell.textContent = num;
-                        cell.id = `num-cell-${num}`;
-                        cell.onclick = () => cell.classList.toggle('marked');
-                    }
-                    bingoCard.appendChild(cell);
-                }
+            selectedCardId = cardId;
+            const card = allCards.find(c => c.id === cardId);
+            if (card) {
+                renderCardPreview(card);
             }
-            container.appendChild(bingoCard);
-            
-            const idDiv = document.createElement('div');
-            idDiv.className = 'bingo-card-id';
-            idDiv.textContent = `Board #: ${card.id}`;
-            container.appendChild(idDiv);
-            
-            document.getElementById('bingo-button').onclick = claimBingo;
+            showPopupMessage(`Card ${cardId} selected! Click BUY to purchase.`);
         }
         
+        // Buy selected card
+        function buyCard() {
+            if (!selectedCardId) {
+                showPopupMessage('Please select a card first!');
+                return;
+            }
+            const wallet = parseInt(document.getElementById('lobby-wallet-value').textContent);
+            const betAmount = 10;
+            if (wallet < betAmount) {
+                showPopupMessage('Insufficient balance! Please deposit.');
+                return;
+            }
+            
+            const card = allCards.find(c => c.id === selectedCardId);
+            if (card && !myCards.find(c => c.id === selectedCardId)) {
+                myCards.push(card);
+                document.getElementById('lobby-wallet-value').textContent = wallet - betAmount;
+                showPopupMessage(`Card ${selectedCardId} purchased! Total cards: ${myCards.length}`);
+                
+                // Mark card button as owned
+                const btn = document.querySelector(`.card-button[onclick="selectCard(${selectedCardId})"]`);
+                if (btn) {
+                    btn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+                }
+                
+                if (myCards.length === 1) {
+                    document.getElementById('lobby-player-count').textContent = myCards.length;
+                    startGameTimer();
+                }
+            } else {
+                showPopupMessage('Card already purchased or not found!');
+            }
+        }
+        
+        // Start game timer
+        function startGameTimer() {
+            timer = 30;
+            const timerEl = document.getElementById('lobby-timer-value');
+            timerEl.textContent = timer;
+            
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timer--;
+                timerEl.textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    startGame();
+                }
+            }, 1000);
+        }
+        
+        // Start the game
+        function startGame() {
+            if (myCards.length === 0) {
+                showPopupMessage('No cards purchased! Cannot start game.');
+                return;
+            }
+            
+            gameActive = true;
+            calledNumbers = [];
+            document.getElementById('lobby').classList.add('hidden');
+            document.getElementById('playroom').classList.remove('hidden');
+            
+            buildMasterGrid();
+            renderMyCards();
+            startNumberCalling();
+        }
+        
+        // Build master grid
         function buildMasterGrid() {
             const grid = document.getElementById('master-grid');
-            if (!grid) return;
             grid.innerHTML = '';
             for (let row = 1; row <= 15; row++) {
                 const masterRow = document.createElement('div');
@@ -578,223 +502,236 @@
             }
         }
         
-        function updateWalletDisplay(balance) {
-            const walletEl = document.getElementById('lobby-wallet-value');
-            if (walletEl) walletEl.textContent = typeof balance === 'number' ? balance.toFixed(2) : balance;
-        }
-        
-        function updateLobbyDisplay(payload) {
-            showLobby();
-            const timerEl = document.getElementById('lobby-timer-value');
-            if (payload.lobbyTimer && timerEl) timerEl.textContent = payload.lobbyTimer;
-            if (payload.wallet) updateWalletDisplay(payload.wallet);
-            if (payload.cardOwners) {
-                Object.keys(payload.cardOwners).forEach(cardId => {
-                    const owner = payload.cardOwners[cardId];
-                    const myId = localStorage.getItem('myId');
-                    const btn = document.querySelector(`.card-button[data-card-id="${cardId}"]`);
-                    if (btn) {
-                        btn.classList.remove('locked-by-me', 'locked-by-other', 'available');
-                        if (owner == myId) btn.classList.add('locked-by-me');
-                        else if (owner) btn.classList.add('locked-by-other');
-                        else btn.classList.add('available');
-                    }
-                });
-                const count = Object.keys(payload.cardOwners).length;
-                const countEl = document.getElementById('lobby-player-count');
-                if (countEl) countEl.textContent = count;
-            }
-            if (payload.user && payload.user.card) {
-                lockedCardId = payload.user.card.id;
-                renderLobbyCardPreview(payload.user.card);
-            }
-        }
-        
-        function updatePlayroomDisplay(payload) {
-            const playersEl = document.getElementById('playroom-players');
-            if (playersEl) playersEl.textContent = payload.playerCount;
-            const rewardEl = document.getElementById('playroom-reward');
-            if (rewardEl) rewardEl.textContent = payload.reward;
-            const statusBox = document.getElementById('playroom-status-box');
-            if (statusBox && payload.status === 'PLAYING') {
-                statusBox.innerHTML = '🎲 GAME STARTED 🎲';
-                statusBox.classList.add('started');
-            }
-            if (payload.user && payload.user.card) {
-                renderBingoCard(payload.user.card);
-            }
-            if (payload.draws) {
-                highlightDraws(payload.draws);
-                highlightUserCard(payload.draws);
-                const callEl = document.getElementById('playroom-call-count');
-                if (callEl) callEl.textContent = payload.draws.length;
-            }
-        }
-        
-        function highlightDraws(draws) {
-            if (!draws || draws.length === 0) return;
-            const lastCall = draws[draws.length - 1];
-            const lastCallEl = document.getElementById('last-call');
-            if (lastCallEl) {
-                let letter = '';
-                if (lastCall < 16) letter = 'B';
-                else if (lastCall < 31) letter = 'I';
-                else if (lastCall < 46) letter = 'N';
-                else if (lastCall < 61) letter = 'G';
-                else letter = 'O';
-                lastCallEl.textContent = `${letter}-${lastCall}`;
-            }
+        // Render player's cards
+        function renderMyCards() {
+            const container = document.getElementById('playroom-card-container');
+            container.innerHTML = '';
             
-            const lastThree = draws.slice(-3);
-            const container = document.getElementById('last-3-calls');
-            if (container) {
+            myCards.forEach((card, idx) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'bingo-card-grid';
+                cardDiv.style.marginBottom = '20px';
+                cardDiv.style.border = '1px solid rgba(255,255,255,0.2)';
+                cardDiv.style.padding = '10px';
+                cardDiv.style.borderRadius = '12px';
+                
+                // Header
+                const colors = { B: '#2ecc71', I: '#f39c12', N: '#3498db', G: '#e74c3c', O: '#9b59b6' };
+                ['B','I','N','G','O'].forEach(letter => {
+                    const header = document.createElement('div');
+                    header.className = 'header-cell';
+                    header.textContent = letter;
+                    header.style.backgroundColor = colors[letter];
+                    cardDiv.appendChild(header);
+                });
+                
+                // Grid
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const num = card.grid[row][col];
+                        const cell = document.createElement('div');
+                        if (num === 0) {
+                            cell.className = 'free-cell';
+                            cell.textContent = '⭐';
+                        } else {
+                            cell.className = 'num-cell';
+                            cell.textContent = num;
+                            cell.id = `card-${card.id}-cell-${num}`;
+                        }
+                        cardDiv.appendChild(cell);
+                    }
+                }
+                
+                const cardIdLabel = document.createElement('div');
+                cardIdLabel.style.textAlign = 'center';
+                cardIdLabel.style.marginTop = '10px';
+                cardIdLabel.style.fontSize = '12px';
+                cardIdLabel.style.color = '#888';
+                cardIdLabel.textContent = `Board #: ${card.id}`;
+                cardDiv.appendChild(cardIdLabel);
+                
+                container.appendChild(cardDiv);
+            });
+        }
+        
+        // Start calling numbers
+        function startNumberCalling() {
+            let available = [];
+            for (let i = 1; i <= 75; i++) available.push(i);
+            
+            callInterval = setInterval(() => {
+                if (!gameActive) return;
+                
+                if (available.length === 0) {
+                    clearInterval(callInterval);
+                    showPopupMessage('Game Over! No more numbers.');
+                    return;
+                }
+                
+                const idx = Math.floor(Math.random() * available.length);
+                const number = available.splice(idx, 1)[0];
+                calledNumbers.push(number);
+                
+                // Update current call display
+                let letter = '';
+                if (number < 16) letter = 'B';
+                else if (number < 31) letter = 'I';
+                else if (number < 46) letter = 'N';
+                else if (number < 61) letter = 'G';
+                else letter = 'O';
+                document.getElementById('last-call').textContent = `${letter}-${number}`;
+                document.getElementById('playroom-call-count').textContent = calledNumbers.length;
+                
+                // Update last 3 calls
+                const lastThree = calledNumbers.slice(-3);
+                const container = document.getElementById('last-3-calls');
                 container.innerHTML = '';
                 lastThree.forEach(call => {
                     const ball = document.createElement('div');
                     ball.classList.add('history-ball');
-                    if (call < 16) { ball.classList.add('ball-b'); ball.textContent = `B-${call}`; }
-                    else if (call < 31) { ball.classList.add('ball-i'); ball.textContent = `I-${call}`; }
-                    else if (call < 46) { ball.classList.add('ball-n'); ball.textContent = `N-${call}`; }
-                    else if (call < 61) { ball.classList.add('ball-g'); ball.textContent = `G-${call}`; }
-                    else { ball.classList.add('ball-o'); ball.textContent = `O-${call}`; }
+                    let l = '';
+                    if (call < 16) l = 'B';
+                    else if (call < 31) l = 'I';
+                    else if (call < 46) l = 'N';
+                    else if (call < 61) l = 'G';
+                    else l = 'O';
+                    ball.classList.add(`ball-${l.toLowerCase()}`);
+                    ball.textContent = `${l}-${call}`;
                     container.appendChild(ball);
                 });
-            }
-            
-            for (let i = 1; i <= 75; i++) {
-                const cell = document.getElementById(`grid-cell-${i}`);
-                if (cell) {
-                    cell.classList.remove('called-new', 'called-old');
-                    if (draws.includes(i)) {
-                        if (i === lastCall) cell.classList.add('called-new');
-                        else cell.classList.add('called-old');
+                
+                // Update master grid
+                const cell = document.getElementById(`grid-cell-${number}`);
+                if (cell) cell.classList.add('called');
+                
+                // Mark on player cards
+                myCards.forEach(card => {
+                    for (let row = 0; row < 5; row++) {
+                        for (let col = 0; col < 5; col++) {
+                            const num = card.grid[row][col];
+                            if (num === number) {
+                                const markCell = document.getElementById(`card-${card.id}-cell-${num}`);
+                                if (markCell) markCell.classList.add('marked');
+                            }
+                        }
                     }
-                }
-            }
+                });
+                
+                // Check for Bingo (simplified)
+                checkForBingo();
+                
+            }, 3000);
         }
         
-        function highlightUserCard(draws) {
-            draws.forEach(num => {
-                const cell = document.getElementById(`num-cell-${num}`);
-                if (cell) cell.classList.add('marked');
-            });
+        function checkForBingo() {
+            // Simple check - just for demonstration
+            // In real game, would check patterns
         }
         
         function claimBingo() {
-            if (bingoClaimed || isClaiming) {
-                showPopupMessage('Already claimed or claiming!');
+            if (!gameActive) {
+                showPopupMessage('Game not active!');
                 return;
             }
-            const callCount = parseInt(document.getElementById('playroom-call-count')?.textContent || '0');
-            if (callCount < 4) {
+            if (calledNumbers.length < 4) {
                 showPopupMessage('Wait for at least 4 numbers!');
                 return;
             }
-            const confirmClaim = confirm('🎯 CLAIM BINGO?\n\n⚠️ WARNING: If invalid, you will be DISMISSED!\n\nAre you sure?');
-            if (!confirmClaim) return;
             
-            isClaiming = true;
-            bingoClaimed = true;
-            const playerId = localStorage.getItem('myId');
-            const client = GameSession.getClient();
-            if (client && client.connected) {
-                const btn = document.getElementById('bingo-button');
-                if (btn) { btn.disabled = true; btn.textContent = '⏳ VERIFYING...'; }
-                showProcessingPopup();
-                client.send('/app/claimBingo', {}, JSON.stringify(playerId));
-                setTimeout(() => {
-                    if (isClaiming) {
-                        isClaiming = false;
-                        hideProcessingPopup();
-                        if (btn) { btn.disabled = false; btn.textContent = '🎯 BINGO! 🎯'; }
-                    }
-                }, 15000);
-            } else {
-                showPopupMessage('Connection error');
-                bingoClaimed = false;
-                isClaiming = false;
-            }
+            showPopupMessage('🎉 BINGO CLAIMED! 🎉\nYou won!');
+            gameActive = false;
+            clearInterval(callInterval);
+            
+            // Show winner modal
+            alert('🎉 CONGRATULATIONS! YOU WON! 🎉');
+            
+            // Reset game
+            setTimeout(() => {
+                resetGame();
+            }, 3000);
         }
         
-        function announceWinners(winResult) {
-            hideProcessingPopup();
-            const winners = winResult.winners || [];
-            const modal = document.getElementById('winnerModal');
-            const container = document.getElementById('winners-container');
-            const summary = document.getElementById('winner-summary');
-            if (!modal) return;
+        function resetGame() {
+            myCards = [];
+            selectedCardId = null;
+            gameActive = false;
+            calledNumbers = [];
+            if (callInterval) clearInterval(callInterval);
+            if (timerInterval) clearInterval(timerInterval);
             
+            document.getElementById('playroom').classList.add('hidden');
+            document.getElementById('lobby').classList.remove('hidden');
+            document.getElementById('lobby-timer-value').textContent = '30';
+            document.getElementById('lobby-player-count').textContent = '0';
+            
+            // Reset card buttons
+            document.querySelectorAll('.card-button').forEach(btn => {
+                btn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                btn.classList.remove('selected-card');
+            });
+            
+            showPopupMessage('Game reset! Select a card to play again.');
+        }
+        
+        function renderCardPreview(card) {
+            const container = document.getElementById('lobby-card-container');
             container.innerHTML = '';
-            if (winners.length === 0) {
-                summary.innerHTML = '😔 No winners this round!';
-                container.innerHTML = '<div style="text-align:center; padding:20px;">Better luck next time!</div>';
-            } else {
-                summary.innerHTML = `🎉 ${winners.map(w => w.playerName).join(', ')} won! 🎉`;
-                winners.forEach(w => {
-                    const section = document.createElement('div');
-                    section.style.cssText = 'background:rgba(255,255,255,0.1); margin:10px; padding:15px; border-radius:12px;';
-                    section.innerHTML = `<div style="font-size:18px; font-weight:bold;">🎉 ${w.playerName} won ${w.winningAmount || 0} ETB!</div>`;
-                    container.appendChild(section);
-                });
-            }
-            modal.style.display = 'flex';
-            document.getElementById('close-modal-button').onclick = () => { modal.style.display = 'none'; reset(); };
             
-            if (window.confetti) window.confetti({ particleCount: 200, spread: 100 });
+            const table = document.createElement('div');
+            table.className = 'lobby-table';
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'lobby-table-cell';
+                    const val = card.grid[row][col];
+                    cell.textContent = val === 0 ? '⭐' : val;
+                    table.appendChild(cell);
+                }
+            }
+            container.appendChild(table);
+            
+            const idDiv = document.createElement('div');
+            idDiv.style.textAlign = 'center';
+            idDiv.style.marginTop = '10px';
+            idDiv.style.fontSize = '12px';
+            idDiv.style.color = '#888';
+            idDiv.textContent = `Board #: ${card.id}`;
+            container.appendChild(idDiv);
         }
         
         function showPopupMessage(msg) {
             const popup = document.getElementById('game-popup');
             const msgEl = document.getElementById('popup-message');
-            if (!popup) return;
             msgEl.textContent = msg;
             popup.style.display = 'block';
             setTimeout(() => { popup.style.display = 'none'; }, 3000);
         }
         
-        function showProcessingPopup() {
-            const popup = document.getElementById('processing-popup');
-            if (popup) popup.style.display = 'flex';
-        }
+        // Initialize
+        generateAllCards();
+        buildCardButtons();
         
-        function hideProcessingPopup() {
-            const popup = document.getElementById('processing-popup');
-            if (popup) popup.style.display = 'none';
-        }
+        // Add buy button to UI
+        const lobbyHeader = document.querySelector('.lobby-header');
+        const buyBtnDiv = document.createElement('div');
+        buyBtnDiv.className = 'lobby-info-box';
+        buyBtnDiv.style.cursor = 'pointer';
+        buyBtnDiv.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+        buyBtnDiv.innerHTML = `
+            <div class="lobby-icon">🛒</div>
+            <div class="lobby-label">BUY CARD</div>
+            <div class="lobby-value">10 ETB</div>
+        `;
+        buyBtnDiv.onclick = buyCard;
+        lobbyHeader.appendChild(buyBtnDiv);
         
-        function reset() {
-            lockedCardId = null;
-            myCardGrid = null;
-            bingoClaimed = false;
-            isClaiming = false;
-            closeModal();
-            showLobby();
-        }
+        // Add bingo button listener
+        document.getElementById('bingo-button').onclick = claimBingo;
         
-        function closeModal() {
-            const modal = document.getElementById('winnerModal');
-            if (modal) modal.style.display = 'none';
-        }
+        // Initial wallet display
+        document.getElementById('lobby-wallet-value').textContent = '100';
         
-        window.updateLobbyDisplay = updateLobbyDisplay;
-        window.updatePlayroomDisplay = updatePlayroomDisplay;
-        window.showPopupMessage = showPopupMessage;
-        window.announceWinners = announceWinners;
-        window.updateWalletDisplay = updateWalletDisplay;
-        window.highlightDraws = highlightDraws;
-        window.highlightUserCard = highlightUserCard;
-        
-        // Initialize when document ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM ready, initializing game...');
-            setTimeout(() => {
-                if (window.GameSession) {
-                    GameSession.login();
-                    fetchConfig();
-                    GameSession.join();
-                }
-            }, 100);
-        });
+        console.log('Game initialized!');
     </script>
 </body>
 </html>
