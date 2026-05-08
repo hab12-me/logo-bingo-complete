@@ -2,277 +2,165 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Logo Bing Bingo - Win Real Money!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Bing Bingo</title>
     <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             font-family: 'Roboto', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            padding: 2px;
             min-height: 100vh;
+            padding: 10px;
         }
-        .hidden {
-            display: none !important;
+        .hidden { display: none !important; }
+        #lobby { max-width: 900px; margin: 0 auto; }
+        .lobby-header {
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 16px;
+            margin-bottom: 20px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .lobby-info-box {
+            flex: 1;
+            background: rgba(255,255,230,0.95);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+        #lobby-timer-value { font-size: 24px; font-weight: bold; color: #e74c3c; }
+        #lobby-card-ids-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 20px;
         }
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .card-button {
+            aspect-ratio: 1;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            cursor: pointer;
         }
-        .pulse {
-            animation: pulse 0.5s ease-in-out;
+        .locked-by-me { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .locked-by-other { background: linear-gradient(135deg, #e74c3c, #c0392b); opacity: 0.7; }
+        .available { background: linear-gradient(135deg, #667eea, #764ba2); }
+        #lobby-card-container {
+            background: rgba(255,255,255,0.15);
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+        }
+        .lobby-table {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .lobby-table-cell {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .playroom-bingo-button {
+            width: 80%;
+            max-width: 300px;
+            height: 55px;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
         }
     </style>
-    <link rel="stylesheet" href="css/lobby.css?v=5">
-    <link rel="stylesheet" href="css/playroom.css?v=5">
-    <link rel="stylesheet" href="css/popup.css?v=5">
+    <link rel="stylesheet" href="css/lobby.css">
+    <link rel="stylesheet" href="css/playroom.css">
+    <link rel="stylesheet" href="css/popup.css">
 </head>
 <body>
-    <!-- Telegram WebApp SDK -->
     <script src="js/telegram-web-app.js"></script>
-    
-    <!-- WebSocket Libraries -->
     <script src="js/sockjs.min.js"></script>
     <script src="js/stomp.min.js"></script>
-    
-    <!-- Effects -->
     <script src="js/confetti.browser.min.js"></script>
-    
-    <!-- Game Scripts -->
-    <script src="js/client-session.js?v=5"></script>
-    <script src="js/grid-master.js?v=5"></script>
-    <script src="js/utility.js?v=5"></script>
-    <script src="js/payment.js?v=5"></script>
+    <script src="js/client-session.js"></script>
+    <script src="js/grid-master.js"></script>
+    <script src="js/utility.js"></script>
+    <script src="js/payment.js"></script>
     
     <script>
-        // Global game variables
-        let myName;
-        let myId;
-        let myToken;
-        let lockedCardId = null;
-        let myNumbers = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0]
-        ];
-        
-        let lastLobbyUpdate = 0;
-        let latestPlayerCount = 0;
-        let currentRoomState = null;
-        let numberOfCards;
-        let calledNumbers = [];
-        let isLocked = false;
-        let lateJoined = false;
-        let bingoClaimed = false;
-        let isClaiming = false;
-
-        // Initialize game when DOM is ready
         document.addEventListener("DOMContentLoaded", async () => {
-            console.log("🎮 Logo Bing Game Initializing...");
-            
-            // Initialize Telegram WebApp
+            console.log("Game starting...");
             const tg = window.Telegram?.WebApp;
-            if (tg) {
-                tg.ready();
-                tg.expand();
-                tg.enableClosingConfirmation();
-                console.log("✅ Telegram WebApp initialized");
-            }
+            if (tg) { tg.ready(); tg.expand(); }
             
-            // Start game session
             GameSession.login();
             await fetchConfig();
             await GameSession.join();
             
-            // Initialize payment system after player is ready
             setTimeout(() => {
-                const playerId = localStorage.getItem("myId");
-                if (playerId && window.PaymentSystem) {
-                    window.PaymentSystem.init(playerId);
-                    console.log("✅ Payment system initialized for player:", playerId);
-                }
+                const pid = localStorage.getItem("myId");
+                if (pid && window.PaymentSystem) window.PaymentSystem.init(pid);
             }, 2000);
-            
-            console.log("🎮 Logo Bing Game Ready!");
-        });
-        
-        // Handle page visibility changes (reconnect if needed)
-        document.addEventListener("visibilitychange", async () => {
-            if (!document.hidden) {
-                console.log("📱 Page became visible again");
-                const client = GameSession.getClient();
-                if (!client) {
-                    console.log("No client, re-initializing...");
-                    GameSession.login();
-                    await fetchConfig();
-                    await GameSession.join();
-                } else if (!client.connected) {
-                    console.log("Client disconnected, reconnecting...");
-                    GameSession.reconnect();
-                } else {
-                    console.log("Refreshing game state...");
-                    GameSession.refresh();
-                }
-            }
-        });
-        
-        // Handle before unload
-        window.addEventListener("beforeunload", () => {
-            console.log("👋 Player leaving game");
         });
     </script>
 
-    <!-- ==================== LOBBY SECTION ==================== -->
-    <div id="lobby" class="hidden">
-        <!-- Lobby Header / Top Bar -->
-        <div class="lobby-header" id="lobby-header" style="display:none;">
-            <!-- Timer Box -->
-            <div class="lobby-info-box" id="lobby-timer">
-                <div class="lobby-icon">⏳</div>
-                <div class="lobby-value" id="lobby-timer-value">-</div>
-            </div>
-            
-            <!-- Players Count Box -->
-            <div class="lobby-info-box" id="lobby-players">
-                <div class="lobby-icon">👥</div>
-                <div class="lobby-label">Players</div>
-                <div class="lobby-value" id="lobby-player-count">-</div>
-            </div>
-            
-            <!-- Wallet Balance Box -->
-            <div class="lobby-info-box" id="lobby-wallet">
-                <div class="lobby-icon">💰</div>
-                <div class="lobby-label">Wallet</div>
-                <div class="lobby-value" id="lobby-wallet-value">-</div>
-            </div>
-            
-            <!-- Bet Amount Box -->
-            <div class="lobby-info-box" id="lobby-bet">
-                <div class="lobby-icon">🎲</div>
-                <div class="lobby-label">Bet</div>
-                <div class="lobby-value" id="lobby-bet-value">10</div>
-            </div>
+    <div id="lobby">
+        <div class="lobby-header">
+            <div class="lobby-info-box"><div>⏳</div><div id="lobby-timer-value">-</div></div>
+            <div class="lobby-info-box"><div>👥</div><div class="lobby-label">Players</div><div id="lobby-player-count">-</div></div>
+            <div class="lobby-info-box"><div>💰</div><div class="lobby-label">Wallet</div><div id="lobby-wallet-value">-</div></div>
+            <div class="lobby-info-box"><div>🎲</div><div class="lobby-label">Bet</div><div id="lobby-bet-value">10</div></div>
         </div>
-        
-        <!-- Cards Grid Container -->
         <div id="lobby-card-ids-container"></div>
-        
-        <!-- Selected Card Preview -->
         <div id="lobby-card-container"></div>
     </div>
 
-    <!-- ==================== PLAYROOM SECTION ==================== -->
-    <div class="hidden" id="playroom">
-        <!-- Playroom Header -->
-        <div class="playroom-header" id="playroom-header">
-            <div class="playroom-info-box">
-                <div class="icon">👥</div>
-                <div class="label">Players</div>
-                <div class="value" id="playroom-players">-</div>
-            </div>
-            <div class="playroom-info-box">
-                <div class="icon">💰</div>
-                <div class="label">Jackpot</div>
-                <div class="value" id="playroom-reward">-</div>
-            </div>
-            <div class="playroom-info-box">
-                <div class="icon">🎲</div>
-                <div class="label">Bet</div>
-                <div class="value" id="playroom-bet-value">10</div>
-            </div>
-            <div class="playroom-info-box">
-                <div class="icon">🔔</div>
-                <div class="label">Called</div>
-                <div class="value" id="playroom-call-count">-</div>
-            </div>
+    <div id="playroom" class="hidden">
+        <div class="playroom-header">
+            <div>👥 Players: <span id="playroom-players">-</span></div>
+            <div>💰 Jackpot: <span id="playroom-reward">-</span></div>
+            <div>🎲 Bet: <span id="playroom-bet-value">10</span></div>
+            <div>🔔 Called: <span id="playroom-call-count">-</span></div>
         </div>
-        
-        <!-- Main Game Area -->
-        <div class="playroom-main">
-            <!-- Left Panel - Master Board -->
-            <div class="playroom-board">
-                <div class="playroom-master-header">
-                    <span class="header-b">B</span>
-                    <span class="header-i">I</span>
-                    <span class="header-n">N</span>
-                    <span class="header-g">G</span>
-                    <span class="header-o">O</span>
-                </div>
-                <div class="playroom-master-grid" id="master-grid"></div>
-            </div>
-            
-            <!-- Right Panel - Game Info & Player Card -->
-            <div class="playroom-sidebar">
-                <!-- Game Status Box -->
-                <div id="playroom-status-box">SHUFFLING<span class="loader"></span></div>
-                
-                <!-- Current Called Number -->
-                <div class="playroom-current-call">
-                    <span>Current Call</span>
-                    <div class="ball" id="last-call">-</div>
-                </div>
-                
-                <!-- Last 3 Called Numbers -->
-                <div class="playroom-last-3-calls" id="last-3-calls"></div>
-                
-                <!-- Player's Bingo Card -->
-                <div class="playroom-card-container" id="playroom-card-container"></div>
-            </div>
-        </div>
-        
-        <!-- Footer with Bingo Button -->
-        <div class="playroom-footer" id="playroom-footer">
-            <button class="playroom-bingo-button" id="bingo-button">🎯 BINGO! 🎯</button>
-        </div>
+        <div class="playroom-master-grid" id="master-grid"></div>
+        <div id="playroom-status-box">SHUFFLING<span class="loader"></span></div>
+        <div class="playroom-current-call">Current Call: <span id="last-call">-</span></div>
+        <div id="playroom-card-container"></div>
+        <button class="playroom-bingo-button" id="bingo-button">🎯 BINGO! 🎯</button>
     </div>
-    
-    <!-- ==================== POPUPS & MODALS ==================== -->
-    
-    <!-- Toast Popup Notification -->
-    <div class="popup" id="game-popup">
-        <div class="popup-message" id="popup-message"></div>
-        <div class="popup-bar-container">
-            <div class="popup-bar" id="popup-bar"></div>
-        </div>
-    </div>
-    
-    <!-- Processing Popup -->
-    <div id="processing-popup" class="processing-popup">
-        <div class="processing-text">🔍 Verifying Bingo Claim...</div>
-        <div class="spinner"></div>
-    </div>
-    
-    <!-- Winner Modal -->
-    <div class="modal" id="winnerModal" aria-hidden="true" role="dialog">
-        <div class="modal__dialog">
-            <div class="winner-header">
-                <h2>🎉 BINGO! 🎉</h2>
-                <div id="winner-summary" class="winner-summary"></div>
-            </div>
-            <div id="winners-container" class="winners-scroll"></div>
-            <button class="close-modal-button" id="close-modal-button">Close</button>
-        </div>
-    </div>
-    
-    <!-- Network Status Banner -->
-    <div id="network-banner" style="display:none;"></div>
+
+    <div id="game-popup" class="popup"><div id="popup-message"></div></div>
 </body>
 </html>
