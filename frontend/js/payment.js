@@ -3,7 +3,7 @@
  */
 
 // Backend URL - must match client-session.js
-let BACKEND_URL = "https://your-backend.onrender.com";
+let BACKEND_URL = "https://logo-bingo-complete-fgfh.onrender.com";
 
 const PaymentSystem = (() => {
     let currentPlayerId = null;

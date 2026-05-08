@@ -3,7 +3,7 @@
 // ============================================
 // BACKEND CONFIGURATION - UPDATE THIS URL
 // ============================================
-const BACKEND_URL = "https://your-backend.onrender.com";
+const BACKEND_URL = "https://logo-bingo-complete-fgfh.onrender.com";
 // ============================================
 
 /**
