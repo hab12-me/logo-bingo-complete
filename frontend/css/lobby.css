@@ -1,0 +1,628 @@
+/*
+ * Logo Bing Bingo - Lobby Styles
+ * Complete Commercial Version
+ */
+
+/* ============================================
+   CSS VARIABLES / ROOT
+   ============================================ */
+:root {
+    /* Colors */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    --danger-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    --warning-gradient: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    
+    /* Bingo Header Colors */
+    --header-b-bg: #2ecc71;
+    --header-i-bg: #f39c12;
+    --header-n-bg: #3498db;
+    --header-g-bg: #e74c3c;
+    --header-o-bg: #9b59b6;
+    
+    /* Card Button Colors */
+    --button-bg: rgba(227, 228, 255, 0.6);
+    --button-locked-me: #1e8e27;
+    --button-locked-other: #ff7c00;
+    
+    /* Layout */
+    --orange-bg: #f16f04;
+    --lucky-bg: #ff6e00;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 15px rgba(0,0,0,0.2);
+    --shadow-lg: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* ============================================
+   LOBBY CONTAINER
+   ============================================ */
+#lobby {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 10px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   LOBBY HEADER / TOP BAR
+   ============================================ */
+.lobby-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+    position: sticky;
+    padding: 6px 4px;
+    top: 0;
+    z-index: 1000;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+
+/* Hide scrollbar for header */
+.lobby-header::-webkit-scrollbar {
+    height: 2px;
+}
+
+.lobby-header::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+
+.lobby-header::-webkit-scrollbar-thumb {
+    background: var(--orange-bg);
+    border-radius: 10px;
+}
+
+/* Info Boxes */
+.lobby-header .lobby-info-box {
+    flex: 1 1 0;
+    min-width: 70px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 230, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 8px 6px;
+    margin: 0;
+    backdrop-filter: blur(5px);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lobby-header .lobby-info-box:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Timer Value */
+#lobby-timer-value {
+    font-size: 24px;
+    font-weight: bolder;
+    color: #e74c3c;
+    padding: 4px 8px;
+    border-radius: 8px;
+    text-align: center;
+    font-family: monospace;
+    letter-spacing: 2px;
+}
+
+/* Timer blinking effect when low */
+#lobby-timer-value.low {
+    animation: blink 1s infinite;
+    color: #ff0000;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Icons and Labels */
+.lobby-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.lobby-label {
+    margin-top: 0;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lobby-value {
+    margin-top: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* ============================================
+   CARD BUTTONS GRID
+   ============================================ */
+#lobby-card-ids-container {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+    max-height: 420px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom Scrollbar */
+#lobby-card-ids-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#lobby-card-ids-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+#lobby-card-ids-container::-webkit-scrollbar-thumb {
+    background: var(--orange-bg);
+    border-radius: 10px;
+}
+
+/* Card Button Styles */
+.card-button {
+    aspect-ratio: 1 / 1;
+    padding: 8px 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    font-family: monospace;
+    letter-spacing: 1px;
+}
+
+.card-button:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-button:active {
+    transform: translateY(1px);
+}
+
+/* Card Button States */
+.locked-by-me {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    box-shadow: 0 0 12px rgba(46, 204, 113, 0.6);
+    animation: glowGreen 1.5s infinite;
+}
+
+@keyframes glowGreen {
+    0%, 100% { box-shadow: 0 0 5px rgba(46, 204, 113, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(46, 204, 113, 0.8); }
+}
+
+.locked-by-other {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    opacity: 0.7;
+    filter: grayscale(20%);
+}
+
+.available {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    animation: none;
+}
+
+.available:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* ============================================
+   CARD PREVIEW SECTION
+   ============================================ */
+#lobby-card-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 20px;
+    min-height: 250px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Card Table Grid */
+.lobby-table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 15px auto;
+    max-width: 300px;
+    width: 100%;
+}
+
+/* Card Table Cells */
+.lobby-table-cell {
+    display: flex;
+    aspect-ratio: 1 / 1;
+    background: rgba(255, 255, 230, 0.95);
+    border: 2px solid white;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    pointer-events: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+    font-family: monospace;
+}
+
+.lobby-table-cell.free-space {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+}
+
+/* Card ID Display */
+.lobby-card-id {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--header-o-bg);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 6px 18px;
+    border-radius: 30px;
+    margin-top: 10px;
+    box-shadow: var(--shadow-sm);
+    display: inline-block;
+}
+
+/* Empty State */
+#lobby-card-container:empty::before {
+    content: "👆 Select a card to play";
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    padding: 30px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Large Tablets and Small Desktops (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #lobby-card-ids-container {
+        grid-template-columns: repeat(8, 1fr);
+        gap: 8px;
+        padding: 15px;
+    }
+    
+    .card-button {
+        font-size: 0.9rem;
+        padding: 6px 2px;
+    }
+    
+    .lobby-table {
+        max-width: 280px;
+        gap: 8px;
+    }
+    
+    .lobby-table-cell {
+        font-size: 16px;
+    }
+}
+
+/* Tablets (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    #lobby-card-ids-container {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .card-button {
+        font-size: 0.85rem;
+        padding: 8px 4px;
+    }
+    
+    .lobby-header {
+        gap: 6px;
+    }
+    
+    .lobby-header .lobby-info-box {
+        min-width: 60px;
+        padding: 6px 4px;
+    }
+    
+    #lobby-timer-value {
+        font-size: 20px;
+    }
+    
+    .lobby-table {
+        max-width: 260px;
+        gap: 8px;
+    }
+    
+    .lobby-table-cell {
+        font-size: 15px;
+    }
+}
+
+/* Mobile Phones (380px - 480px) */
+@media (min-width: 380px) and (max-width: 480px) {
+    #lobby-card-ids-container {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        padding: 12px;
+        max-height: 380px;
+    }
+    
+    .card-button {
+        font-size: 0.75rem;
+        padding: 6px 2px;
+        border-radius: 10px;
+    }
+    
+    .lobby-header {
+        gap: 5px;
+    }
+    
+    .lobby-header .lobby-info-box {
+        min-width: 55px;
+        padding: 5px 3px;
+    }
+    
+    #lobby-timer-value {
+        font-size: 18px;
+    }
+    
+    .lobby-icon {
+        font-size: 14px;
+    }
+    
+    .lobby-label {
+        font-size: 9px;
+    }
+    
+    .lobby-value {
+        font-size: 13px;
+    }
+    
+    .lobby-table {
+        max-width: 220px;
+        gap: 6px;
+    }
+    
+    .lobby-table-cell {
+        font-size: 13px;
+        border-radius: 8px;
+    }
+    
+    .lobby-card-id {
+        font-size: 11px;
+        padding: 4px 12px;
+    }
+}
+
+/* Small Mobile Phones (up to 379px) */
+@media (max-width: 379px) {
+    #lobby-card-ids-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 10px;
+        max-height: 350px;
+    }
+    
+    .card-button {
+        font-size: 0.7rem;
+        padding: 5px 2px;
+        border-radius: 8px;
+    }
+    
+    .lobby-header {
+        gap: 4px;
+    }
+    
+    .lobby-header .lobby-info-box {
+        min-width: 50px;
+        padding: 4px 2px;
+    }
+    
+    #lobby-timer-value {
+        font-size: 16px;
+    }
+    
+    .lobby-icon {
+        font-size: 12px;
+    }
+    
+    .lobby-label {
+        font-size: 8px;
+    }
+    
+    .lobby-value {
+        font-size: 11px;
+    }
+    
+    .lobby-table {
+        max-width: 200px;
+        gap: 5px;
+    }
+    
+    .lobby-table-cell {
+        font-size: 11px;
+        border-radius: 6px;
+    }
+    
+    .lobby-card-id {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+}
+
+/* Short Screens (Height less than 700px) */
+@media (max-height: 700px) {
+    #lobby-card-ids-container {
+        max-height: 280px;
+    }
+    
+    .lobby-header {
+        margin-bottom: 10px;
+    }
+    
+    #lobby-card-container {
+        min-height: 200px;
+        padding: 15px;
+    }
+    
+    .lobby-table {
+        margin: 10px auto;
+    }
+}
+
+/* Very Short Screens (Height less than 600px) */
+@media (max-height: 600px) {
+    #lobby-card-ids-container {
+        max-height: 200px;
+    }
+    
+    .card-button {
+        padding: 4px 2px;
+    }
+}
+
+/* Landscape Mode */
+@media (orientation: landscape) and (max-height: 500px) {
+    #lobby {
+        gap: 10px;
+    }
+    
+    #lobby-card-ids-container {
+        max-height: 180px;
+    }
+    
+    .lobby-header {
+        padding: 3px 2px;
+    }
+    
+    .lobby-table {
+        max-width: 200px;
+    }
+    
+    .lobby-table-cell {
+        font-size: 11px;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes cardFlip {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+.card-button.new-card {
+    animation: cardFlip 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.lobby-info-box {
+    animation: slideIn 0.3s ease;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-center {
+    text-align: center;
+}
+
+.mt-2 {
+    margin-top: 10px;
+}
+
+.mb-2 {
+    margin-bottom: 10px;
+}
+
+.p-2 {
+    padding: 10px;
+}
+
+/* Loading Spinner for Cards */
+.card-button.loading {
+    position: relative;
+    color: transparent;
+}
+
+.card-button.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Disabled Card Button */
+.card-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}

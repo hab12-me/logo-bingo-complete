@@ -1,0 +1,888 @@
+/*
+ * Logo Bing Bingo - Playroom Styles
+ * Complete Commercial Version
+ */
+
+/* ============================================
+   CSS VARIABLES / ROOT
+   ============================================ */
+:root {
+    /* Bingo Column Colors */
+    --header-b-bg: #2ecc71;
+    --header-i-bg: #f39c12;
+    --header-n-bg: #3498db;
+    --header-g-bg: #e74c3c;
+    --header-o-bg: #9b59b6;
+    
+    /* Backgrounds */
+    --shared-bg: rgba(255, 255, 255, 0.15);
+    --card-bg: rgba(255, 255, 230, 0.95);
+    --board-bg: rgba(0, 0, 0, 0.2);
+    
+    /* Colors */
+    --lucky-bg: #f16f04;
+    --orange-bg: #f16f04;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --info: #3498db;
+    --dark: #2c3e50;
+    
+    /* Borders */
+    --border: 1px solid rgba(255, 255, 255, 0.3);
+    --border-thin: 0.7px solid rgba(255, 255, 255, 0.3);
+    --border-thick: 2px solid rgba(255, 255, 255, 0.5);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 15px rgba(46, 204, 113, 0.5);
+}
+
+/* ============================================
+   PLAYROOM CONTAINER
+   ============================================ */
+#playroom {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 10px;
+    animation: fadeIn 0.4s ease;
+}
+
+/* ============================================
+   PLAYROOM HEADER
+   ============================================ */
+.playroom-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+    position: sticky;
+    padding: 6px 4px;
+    top: 0;
+    z-index: 100;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--board-bg);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    overflow-x: auto;
+    margin-bottom: 5px;
+}
+
+.playroom-info-box {
+    flex: 1 1 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 230, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 8px 6px;
+    margin: 0;
+    backdrop-filter: blur(5px);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+}
+
+.playroom-info-box:hover {
+    transform: translateY(-2px);
+}
+
+.playroom-info-box .icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.playroom-info-box .label {
+    margin-top: 0;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.playroom-info-box .value {
+    margin-top: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* ============================================
+   MAIN GAME AREA
+   ============================================ */
+.playroom-main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 15px;
+    align-items: stretch;
+    min-height: 450px;
+}
+
+/* ============================================
+   LEFT PANEL - MASTER BOARD
+   ============================================ */
+.playroom-board {
+    flex: 0 0 38%;
+    max-width: 38%;
+    background: var(--shared-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 12px;
+    border: var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Master Header (B I N G O) */
+.playroom-master-header {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.playroom-master-header span {
+    display: flex;
+    flex: 1 1 0;
+    aspect-ratio: 1 / 1;
+    padding: 4px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bolder;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-sm);
+}
+
+.header-b { background: var(--header-b-bg); }
+.header-i { background: var(--header-i-bg); }
+.header-n { background: var(--header-n-bg); }
+.header-g { background: var(--header-g-bg); }
+.header-o { background: var(--header-o-bg); }
+
+/* Master Grid (Numbers 1-75) */
+.playroom-master-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.master-row {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+
+.master-cell {
+    display: flex;
+    flex: 1 1 0;
+    aspect-ratio: 1 / 1;
+    padding: 4px 2px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+    cursor: default;
+    font-family: monospace;
+}
+
+/* Called Number States */
+.master-cell.called-new {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    animation: numberFlash 0.5s ease;
+    transform: scale(1.02);
+}
+
+.master-cell.called-old {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    opacity: 0.8;
+}
+
+@keyframes numberFlash {
+    0% { transform: scale(1); background: #f39c12; }
+    50% { transform: scale(1.1); background: #2ecc71; }
+    100% { transform: scale(1); background: #27ae60; }
+}
+
+/* ============================================
+   RIGHT PANEL - SIDEBAR
+   ============================================ */
+.playroom-sidebar {
+    flex: 0 0 60%;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Game Status Box */
+#playroom-status-box {
+    height: 50px;
+    background: var(--shared-bg);
+    backdrop-filter: blur(10px);
+    padding: 10px 18px;
+    border-radius: 14px;
+    border: var(--border);
+    font-size: 18px;
+    font-weight: bolder;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Status States */
+#playroom-status-box.shuffling {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    animation: pulseBg 1.5s infinite;
+}
+
+#playroom-status-box.started {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+#playroom-status-box.completed {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+}
+
+@keyframes pulseBg {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* Loader Animation */
+.loader {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid var(--orange-bg);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Current Call Display */
+.playroom-current-call {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: var(--shadow-md);
+}
+
+.playroom-current-call span {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.playroom-current-call .ball {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange-bg), #e67e22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder;
+    font-size: 22px;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    font-family: monospace;
+    transition: all 0.3s ease;
+}
+
+.playroom-current-call .ball.new {
+    animation: ballAppear 0.4s ease;
+}
+
+@keyframes ballAppear {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Last 3 Calls Container */
+.playroom-last-3-calls {
+    min-height: 65px;
+    display: flex;
+    gap: 10px;
+    background: var(--shared-bg);
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    border-radius: 16px;
+    border: var(--border);
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    margin: 0;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+}
+
+/* History Balls */
+.history-ball {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    animation: popIn 0.3s ease forwards;
+    box-shadow: var(--shadow-sm);
+    font-family: monospace;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Ball Color Classes */
+.ball-b { background: var(--header-b-bg); }
+.ball-i { background: var(--header-i-bg); }
+.ball-n { background: var(--header-n-bg); }
+.ball-g { background: var(--header-g-bg); }
+.ball-o { background: var(--header-o-bg); }
+
+/* ============================================
+   PLAYER BINGO CARD
+   ============================================ */
+.playroom-card-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: var(--shared-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 16px;
+    border: var(--border);
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+    transition: all 0.3s ease;
+}
+
+/* Bingo Card Grid */
+.bingo-card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    width: 100%;
+}
+
+/* Card Cell Base Styles */
+.header-cell,
+.num-cell,
+.free-cell {
+    flex: 1 1 0;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 12px;
+    font-weight: bolder;
+    transition: all 0.2s ease;
+}
+
+/* Header Cells (B, I, N, G, O) */
+.header-cell {
+    font-size: 20px;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: 900;
+    color: white;
+    cursor: default;
+    user-select: none;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Number Cells */
+.num-cell {
+    font-size: 18px;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: 900;
+    color: #333;
+    background: white;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.num-cell:active {
+    transform: scale(0.95);
+}
+
+.num-cell.marked {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    transform: scale(0.97);
+    box-shadow: var(--shadow-glow);
+}
+
+/* Free Cell (Center) */
+.free-cell {
+    font-size: 22px;
+    font-weight: bolder;
+    color: #ffeb3b;
+    cursor: default;
+    user-select: none;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    border: 2px dashed #ffeb3b;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Card ID Display */
+.bingo-card-id {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--header-o-bg);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 6px 16px;
+    border-radius: 30px;
+    display: inline-block;
+    align-self: center;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Empty Card State */
+.empty-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    height: 100%;
+    padding: 30px;
+}
+
+.empty-card .greeting-line {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #ffeb3b;
+}
+
+.empty-card div {
+    margin: 5px 0;
+}
+
+/* ============================================
+   FOOTER / BINGO BUTTON
+   ============================================ */
+.playroom-footer {
+    margin-top: 10px;
+    text-align: center;
+    padding: 10px;
+}
+
+.playroom-bingo-button {
+    width: 85%;
+    max-width: 320px;
+    height: 60px;
+    font-size: 1.6rem;
+    font-weight: bolder;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border: none;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-lg);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-family: monospace;
+}
+
+.playroom-bingo-button:active {
+    transform: scale(0.97);
+    box-shadow: var(--shadow-sm);
+}
+
+.playroom-bingo-button:disabled {
+    opacity: 0.6;
+    transform: none;
+    cursor: not-allowed;
+}
+
+.playroom-bingo-button:not(:disabled):hover {
+    transform: scale(1.02);
+    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+}
+
+/* ============================================
+   DISMISSED CARD OVERLAY
+   ============================================ */
+.dismissed {
+    position: relative;
+}
+
+.dismissed::after {
+    content: "Ⓧ";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #e74c3c;
+    font-size: 120px;
+    opacity: 0.85;
+    line-height: 1;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: stampEffect 0.5s ease forwards;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    z-index: 10;
+}
+
+@keyframes stampEffect {
+    from { 
+        transform: translate(-50%, -50%) scale(0.3) rotate(-45deg); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translate(-50%, -50%) scale(1) rotate(-45deg); 
+        opacity: 0.85; 
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Large Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .playroom-board {
+        flex: 0 0 42%;
+        max-width: 42%;
+    }
+    
+    .playroom-sidebar {
+        flex: 0 0 56%;
+        max-width: 56%;
+    }
+    
+    .master-cell {
+        font-size: 12px;
+    }
+    
+    .num-cell {
+        font-size: 15px;
+    }
+    
+    .playroom-bingo-button {
+        font-size: 1.3rem;
+        height: 55px;
+    }
+}
+
+/* Tablets (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .playroom-board {
+        flex: 0 0 45%;
+        max-width: 45%;
+    }
+    
+    .playroom-sidebar {
+        flex: 0 0 53%;
+        max-width: 53%;
+    }
+    
+    .master-cell {
+        font-size: 11px;
+    }
+    
+    .playroom-master-header span {
+        font-size: 14px;
+    }
+    
+    .num-cell, .free-cell, .header-cell {
+        font-size: 13px;
+    }
+    
+    .playroom-bingo-button {
+        font-size: 1.2rem;
+        height: 50px;
+        width: 90%;
+    }
+    
+    .playroom-current-call .ball {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+    
+    .history-ball {
+        width: 42px;
+        height: 42px;
+        font-size: 11px;
+    }
+    
+    .dismissed::after {
+        font-size: 80px;
+    }
+}
+
+/* Mobile Phones (380px - 480px) */
+@media (min-width: 380px) and (max-width: 480px) {
+    .playroom-main {
+        flex-direction: column;
+    }
+    
+    .playroom-board, .playroom-sidebar {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .playroom-board {
+        margin-bottom: 10px;
+    }
+    
+    .master-cell {
+        font-size: 10px;
+        padding: 3px 1px;
+    }
+    
+    .playroom-master-header span {
+        font-size: 13px;
+        padding: 3px;
+    }
+    
+    .num-cell, .free-cell, .header-cell {
+        font-size: 12px;
+    }
+    
+    .playroom-header {
+        gap: 6px;
+    }
+    
+    .playroom-info-box {
+        padding: 5px 3px;
+    }
+    
+    .playroom-info-box .icon {
+        font-size: 14px;
+    }
+    
+    .playroom-info-box .value {
+        font-size: 13px;
+    }
+    
+    .playroom-bingo-button {
+        font-size: 1.1rem;
+        height: 48px;
+        width: 95%;
+    }
+    
+    .playroom-current-call .ball {
+        width: 45px;
+        height: 45px;
+        font-size: 16px;
+    }
+    
+    .history-ball {
+        width: 38px;
+        height: 38px;
+        font-size: 10px;
+    }
+    
+    .dismissed::after {
+        font-size: 70px;
+    }
+    
+    .bingo-card-grid {
+        gap: 6px;
+    }
+}
+
+/* Small Mobile (up to 379px) */
+@media (max-width: 379px) {
+    .playroom-main {
+        flex-direction: column;
+    }
+    
+    .playroom-board, .playroom-sidebar {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .master-cell {
+        font-size: 9px;
+        padding: 2px 1px;
+    }
+    
+    .playroom-master-header span {
+        font-size: 11px;
+    }
+    
+    .num-cell, .free-cell, .header-cell {
+        font-size: 11px;
+    }
+    
+    .playroom-bingo-button {
+        font-size: 1rem;
+        height: 45px;
+        width: 100%;
+        letter-spacing: 1px;
+    }
+    
+    .playroom-current-call .ball {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .history-ball {
+        width: 34px;
+        height: 34px;
+        font-size: 9px;
+    }
+    
+    .dismissed::after {
+        font-size: 60px;
+    }
+    
+    .bingo-card-grid {
+        gap: 4px;
+    }
+    
+    #playroom-status-box {
+        font-size: 14px;
+        height: 45px;
+    }
+}
+
+/* Landscape Mode */
+@media (orientation: landscape) and (max-height: 500px) {
+    .playroom-main {
+        flex-direction: row;
+    }
+    
+    .playroom-board {
+        flex: 0 0 45%;
+        max-width: 45%;
+    }
+    
+    .playroom-sidebar {
+        flex: 0 0 53%;
+        max-width: 53%;
+    }
+    
+    .playroom-card-container {
+        min-height: 250px;
+    }
+    
+    .bingo-card-grid {
+        gap: 4px;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.playroom-sidebar > * {
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.num-cell.marked {
+    animation: bounceIn 0.3s ease;
+}
+
+/* ============================================
+   WINNING LINE EFFECTS
+   ============================================ */
+.winning-row {
+    position: relative;
+}
+
+.winning-row::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #ffeb3b;
+    box-shadow: 0 0 10px #ffeb3b;
+    animation: lineFlash 0.5s infinite;
+    z-index: 5;
+}
+
+@keyframes lineFlash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}

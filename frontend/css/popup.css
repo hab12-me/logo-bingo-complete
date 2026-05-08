@@ -1,0 +1,671 @@
+/*
+ * Logo Bing Bingo - Popup & Modal Styles
+ * Complete Commercial Version
+ */
+
+/* ============================================
+   CSS VARIABLES / ROOT
+   ============================================ */
+:root {
+    --overlay-bg: rgba(0, 0, 0, 0.85);
+    --dialog-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --orange-bg: #f16f04;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --info: #3498db;
+    --text-light: #fff;
+    --text-dark: #333;
+    --accent: #ffeb3b;
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   WINNER MODAL
+   ============================================ */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    background: var(--overlay-bg);
+    z-index: 2000;
+    backdrop-filter: blur(8px);
+    animation: fadeInBackdrop 0.3s ease;
+}
+
+@keyframes fadeInBackdrop {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal.show {
+    display: grid;
+}
+
+/* Modal Dialog */
+.modal__dialog {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    max-width: 580px;
+    max-height: 85vh;
+    background: var(--dialog-bg);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    padding: 20px;
+    animation: modalSlideUp 0.4s cubic-bezier(0.21, 1.11, 0.35, 1.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Winner Header */
+.winner-header {
+    display: flex;
+    margin: 0 0 15px 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.winner-header h2 {
+    font-size: 3.5rem;
+    font-weight: bolder;
+    margin: 0;
+    color: var(--accent);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    animation: titleBounce 0.6s ease;
+    letter-spacing: 5px;
+}
+
+@keyframes titleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Winner Summary */
+.winner-summary {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+/* Winner Name Highlight */
+.winner-name-highlight {
+    background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+    padding: 4px 12px;
+    border-radius: 30px;
+    color: white;
+    display: inline-block;
+    margin: 2px;
+    font-weight: bold;
+}
+
+/* Winners Scroll Container */
+.winners-scroll {
+    flex: 1;
+    overflow-y: auto;
+    margin: 15px 0;
+    padding-right: 8px;
+}
+
+/* Custom Scrollbar */
+.winners-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.winners-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.winners-scroll::-webkit-scrollbar-thumb {
+    background: var(--orange-bg);
+    border-radius: 10px;
+}
+
+/* Winner Section Card */
+.winner-section {
+    width: 90%;
+    margin: 0 auto 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.winner-section:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Winner Name */
+.winner-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    text-align: center;
+    border-bottom: 2px solid #f39c12;
+    padding-bottom: 8px;
+    display: inline-block;
+    width: auto;
+}
+
+/* Winner Card ID */
+.winner-card-id {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #9b59b6;
+    background: rgba(155, 89, 182, 0.1);
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* Winner Card Grid */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    border-radius: 16px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Card Cell */
+.cell {
+    display: flex;
+    flex: 1 1 0;
+    aspect-ratio: 1 / 1;
+    background: #ffffe6;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+/* Header Cell in Winner Card */
+.cell.header {
+    font-size: 17px;
+    font-weight: bolder;
+    color: white;
+    border: none;
+}
+
+/* Free Space Cell */
+.cell.free {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: var(--accent);
+    border: 2px dashed var(--accent);
+}
+
+/* Winning Numbers Cell */
+.cell.winning {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    animation: winPulse 0.5s ease;
+}
+
+/* Last Winning Number Glow */
+.cell.last-winning {
+    animation: winGlow 0.8s infinite alternate;
+    position: relative;
+}
+
+@keyframes winGlow {
+    from { box-shadow: 0 0 5px #2ecc71; }
+    to { box-shadow: 0 0 20px #f39c12; }
+}
+
+/* Drawn Numbers Cell */
+.cell.drawn {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+}
+
+@keyframes winPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background: #f39c12; }
+    100% { transform: scale(1); }
+}
+
+/* Close Modal Button */
+.close-modal-button {
+    width: 90%;
+    margin: 15px auto 5px;
+    height: 58px;
+    border: none;
+    border-radius: 60px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.close-modal-button:active {
+    transform: scale(0.97);
+}
+
+.close-modal-button:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+}
+
+/* ============================================
+   TOAST POPUP NOTIFICATION
+   ============================================ */
+.popup {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 380px;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: none;
+    z-index: 3000;
+    animation: popupSlideDown 0.35s cubic-bezier(0.21, 1.11, 0.35, 1.1);
+}
+
+@keyframes popupSlideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Popup Message */
+.popup-message {
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    line-height: 1.4;
+}
+
+/* Progress Bar Container */
+.popup-bar-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+}
+
+/* Progress Bar Animation */
+.popup-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #f39c12, #e74c3c);
+    animation: slideBar 3.5s linear forwards;
+}
+
+@keyframes slideBar {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* ============================================
+   PROCESSING POPUP
+   ============================================ */
+.processing-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    border: 2px solid #f39c12;
+    border-radius: 60px;
+    padding: 18px 28px;
+    box-shadow: var(--shadow-lg);
+    z-index: 3500;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    width: auto;
+    min-width: 280px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(10px);
+}
+
+.processing-popup.show {
+    display: flex;
+    opacity: 1;
+}
+
+.processing-popup.hide {
+    opacity: 0;
+}
+
+/* Processing Text */
+.processing-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+/* Spinner Animation */
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #f39c12;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ============================================
+   NETWORK BANNER
+   ============================================ */
+#network-banner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #e74c3c;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-weight: bold;
+    z-index: 4000;
+    animation: slideDown 0.3s ease;
+    font-size: 14px;
+}
+
+#network-banner.online {
+    background: #2ecc71;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+/* ============================================
+   RESPONSIVE POPUP STYLES
+   ============================================ */
+
+/* Tablets */
+@media (max-width: 768px) {
+    .modal__dialog {
+        width: 95%;
+        max-width: 500px;
+        padding: 16px;
+    }
+    
+    .winner-header h2 {
+        font-size: 2.8rem;
+    }
+    
+    .winner-summary {
+        font-size: 1rem;
+    }
+    
+    .cell {
+        font-size: 13px;
+    }
+    
+    .cell.header {
+        font-size: 15px;
+    }
+    
+    .close-modal-button {
+        height: 52px;
+        font-size: 1.1rem;
+    }
+    
+    .popup {
+        top: 60px;
+        max-width: 340px;
+    }
+    
+    .processing-popup {
+        padding: 15px 24px;
+        min-width: 250px;
+    }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+    .modal__dialog {
+        width: 95%;
+        max-width: 420px;
+        padding: 14px;
+        max-height: 90vh;
+    }
+    
+    .winner-header {
+        padding: 15px;
+    }
+    
+    .winner-header h2 {
+        font-size: 2.2rem;
+        letter-spacing: 3px;
+    }
+    
+    .winner-summary {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+    
+    .winner-section {
+        width: 95%;
+        padding: 12px;
+    }
+    
+    .winner-name {
+        font-size: 1rem;
+    }
+    
+    .cell {
+        font-size: 11px;
+    }
+    
+    .cell.header {
+        font-size: 13px;
+    }
+    
+    .card-grid {
+        gap: 5px;
+    }
+    
+    .close-modal-button {
+        height: 48px;
+        font-size: 1rem;
+    }
+    
+    .popup {
+        top: 55px;
+        max-width: 300px;
+    }
+    
+    .popup-message {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    .processing-popup {
+        padding: 12px 20px;
+        min-width: 220px;
+    }
+    
+    .processing-text {
+        font-size: 0.9rem;
+    }
+    
+    .spinner {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .dismissed::after {
+        font-size: 60px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 380px) {
+    .modal__dialog {
+        width: 98%;
+        padding: 12px;
+    }
+    
+    .winner-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .winner-summary {
+        font-size: 0.8rem;
+    }
+    
+    .cell {
+        font-size: 10px;
+    }
+    
+    .cell.header {
+        font-size: 12px;
+    }
+    
+    .card-grid {
+        gap: 4px;
+    }
+    
+    .close-modal-button {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+    
+    .popup {
+        top: 50px;
+        max-width: 280px;
+    }
+    
+    .popup-message {
+        font-size: 12px;
+    }
+}
+
+/* Landscape Mode */
+@media (orientation: landscape) and (max-height: 500px) {
+    .modal__dialog {
+        max-height: 90vh;
+    }
+    
+    .winners-scroll {
+        max-height: 200px;
+    }
+    
+    .winner-header {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .winner-header h2 {
+        font-size: 2rem;
+    }
+}
+
+/* ============================================
+   ADDITIONAL ANIMATIONS
+   ============================================ */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.popup.error {
+    animation: shake 0.4s ease;
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+}
+
+.popup.success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-success {
+    color: #2ecc71;
+}
+
+.text-danger {
+    color: #e74c3c;
+}
+
+.text-warning {
+    color: #f39c12;
+}
+
+.text-info {
+    color: #3498db;
+}
+
+.bg-success {
+    background: #2ecc71;
+}
+
+.bg-danger {
+    background: #e74c3c;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.font-mono {
+    font-family: monospace;
+}
