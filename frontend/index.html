@@ -2,112 +2,307 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Logo Bing Bingo</title>
     <style>
-        * { box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            margin: 0;
-            font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
             min-height: 100vh;
-            padding: 10px;
+            color: #fff;
         }
         .hidden { display: none !important; }
-        #lobby { max-width: 900px; margin: 0 auto; }
+        
+        /* Lobby Styles */
+        #lobby {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
         .lobby-header {
             display: flex;
-            gap: 10px;
-            background: rgba(255,255,255,0.2);
-            padding: 10px;
+            gap: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
             border-radius: 16px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         .lobby-info-box {
             flex: 1;
-            background: rgba(255,255,230,0.95);
+            background: rgba(0,0,0,0.5);
             border-radius: 12px;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
+            min-width: 100px;
         }
-        #lobby-timer-value { font-size: 24px; font-weight: bold; color: #e74c3c; }
+        .lobby-icon { font-size: 24px; margin-bottom: 5px; }
+        .lobby-label { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .lobby-value { font-size: 28px; font-weight: bold; color: #00d4ff; }
+        #lobby-timer-value { color: #ff6b6b; font-size: 36px; }
+        
+        /* Cards Grid */
         #lobby-card-ids-container {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             gap: 10px;
             max-height: 400px;
             overflow-y: auto;
-            background: rgba(255,255,255,0.15);
-            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
             padding: 20px;
+            margin-bottom: 20px;
         }
         .card-button {
             aspect-ratio: 1;
             padding: 10px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            border-radius: 12px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
             color: white;
             cursor: pointer;
+            transition: transform 0.2s;
         }
+        .card-button:hover { transform: scale(1.05); }
         .locked-by-me { background: linear-gradient(135deg, #2ecc71, #27ae60); }
         .locked-by-other { background: linear-gradient(135deg, #e74c3c, #c0392b); opacity: 0.7; }
         .available { background: linear-gradient(135deg, #667eea, #764ba2); }
+        
+        /* Card Preview */
         #lobby-card-container {
-            background: rgba(255,255,255,0.15);
-            border-radius: 24px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
             padding: 20px;
-            margin-top: 20px;
-            min-height: 200px;
+            text-align: center;
         }
         .lobby-table {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            gap: 8px;
             max-width: 300px;
             margin: 0 auto;
         }
         .lobby-table-cell {
             aspect-ratio: 1;
-            background: white;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
             font-weight: bold;
+            color: #00d4ff;
         }
-        .playroom-bingo-button {
-            width: 80%;
+        .lobby-card-id {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+        
+        /* Playroom Styles */
+        #playroom {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .playroom-header {
+            display: flex;
+            gap: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .playroom-info-box {
+            flex: 1;
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .playroom-main {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .playroom-board {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .playroom-master-header {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .playroom-master-header span {
+            text-align: center;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        .header-b { background: #2ecc71; }
+        .header-i { background: #f39c12; }
+        .header-n { background: #3498db; }
+        .header-g { background: #e74c3c; }
+        .header-o { background: #9b59b6; }
+        
+        .playroom-master-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .master-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+        .master-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .master-cell.called-new { background: #2ecc71; color: #000; }
+        .master-cell.called-old { background: #e74c3c; }
+        
+        .playroom-sidebar {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        #playroom-status-box {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .playroom-current-call {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .ball {
+            width: 80px;
+            height: 80px;
+            background: #f39c12;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .playroom-last-3-calls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .history-ball {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .ball-b { background: #2ecc71; }
+        .ball-i { background: #f39c12; }
+        .ball-n { background: #3498db; }
+        .ball-g { background: #e74c3c; }
+        .ball-o { background: #9b59b6; }
+        
+        .playroom-card-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 400px;
+        }
+        .bingo-card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        .header-cell, .num-cell, .free-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .header-cell { background: #667eea; color: white; }
+        .num-cell { background: white; color: #333; cursor: pointer; }
+        .free-cell { background: #2ecc71; color: white; }
+        .num-cell.marked { background: #2ecc71; color: white; }
+        
+        .bingo-button {
+            width: 100%;
             max-width: 300px;
-            height: 55px;
-            font-size: 1.4rem;
+            margin: 20px auto 0;
+            display: block;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
             background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
             border: none;
             border-radius: 50px;
+            color: white;
             cursor: pointer;
-            margin: 20px auto;
-            display: block;
         }
+        
+        /* Popup */
         .popup {
             position: fixed;
-            top: 50%;
+            bottom: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background: #333;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
             display: none;
             z-index: 1000;
         }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lobby-header, .playroom-header { flex-direction: column; }
+            #lobby-card-ids-container { grid-template-columns: repeat(5, 1fr); }
+        }
     </style>
-    <link rel="stylesheet" href="css/lobby.css">
-    <link rel="stylesheet" href="css/playroom.css">
-    <link rel="stylesheet" href="css/popup.css">
 </head>
 <body>
     <script src="js/telegram-web-app.js"></script>
@@ -118,49 +313,488 @@
     <script src="js/grid-master.js"></script>
     <script src="js/utility.js"></script>
     <script src="js/payment.js"></script>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            console.log("Game starting...");
-            const tg = window.Telegram?.WebApp;
-            if (tg) { tg.ready(); tg.expand(); }
-            
-            GameSession.login();
-            await fetchConfig();
-            await GameSession.join();
-            
-            setTimeout(() => {
-                const pid = localStorage.getItem("myId");
-                if (pid && window.PaymentSystem) window.PaymentSystem.init(pid);
-            }, 2000);
-        });
-    </script>
 
+    <!-- LOBBY -->
     <div id="lobby">
         <div class="lobby-header">
-            <div class="lobby-info-box"><div>⏳</div><div id="lobby-timer-value">-</div></div>
-            <div class="lobby-info-box"><div>👥</div><div class="lobby-label">Players</div><div id="lobby-player-count">-</div></div>
-            <div class="lobby-info-box"><div>💰</div><div class="lobby-label">Wallet</div><div id="lobby-wallet-value">-</div></div>
-            <div class="lobby-info-box"><div>🎲</div><div class="lobby-label">Bet</div><div id="lobby-bet-value">10</div></div>
+            <div class="lobby-info-box">
+                <div class="lobby-icon">⏳</div>
+                <div class="lobby-label">Time</div>
+                <div class="lobby-value" id="lobby-timer-value">-</div>
+            </div>
+            <div class="lobby-info-box">
+                <div class="lobby-icon">👥</div>
+                <div class="lobby-label">Players</div>
+                <div class="lobby-value" id="lobby-player-count">-</div>
+            </div>
+            <div class="lobby-info-box">
+                <div class="lobby-icon">💰</div>
+                <div class="lobby-label">Wallet</div>
+                <div class="lobby-value" id="lobby-wallet-value">-</div>
+            </div>
+            <div class="lobby-info-box">
+                <div class="lobby-icon">🎲</div>
+                <div class="lobby-label">Bet</div>
+                <div class="lobby-value" id="lobby-bet-value">10</div>
+            </div>
         </div>
         <div id="lobby-card-ids-container"></div>
         <div id="lobby-card-container"></div>
     </div>
 
+    <!-- PLAYROOM -->
     <div id="playroom" class="hidden">
         <div class="playroom-header">
-            <div>👥 Players: <span id="playroom-players">-</span></div>
-            <div>💰 Jackpot: <span id="playroom-reward">-</span></div>
-            <div>🎲 Bet: <span id="playroom-bet-value">10</span></div>
-            <div>🔔 Called: <span id="playroom-call-count">-</span></div>
+            <div class="playroom-info-box">
+                <div>👥</div>
+                <div>Players</div>
+                <div id="playroom-players">-</div>
+            </div>
+            <div class="playroom-info-box">
+                <div>💰</div>
+                <div>Jackpot</div>
+                <div id="playroom-reward">-</div>
+            </div>
+            <div class="playroom-info-box">
+                <div>🎲</div>
+                <div>Bet</div>
+                <div id="playroom-bet-value">10</div>
+            </div>
+            <div class="playroom-info-box">
+                <div>🔔</div>
+                <div>Called</div>
+                <div id="playroom-call-count">-</div>
+            </div>
         </div>
-        <div class="playroom-master-grid" id="master-grid"></div>
-        <div id="playroom-status-box">SHUFFLING<span class="loader"></span></div>
-        <div class="playroom-current-call">Current Call: <span id="last-call">-</span></div>
-        <div id="playroom-card-container"></div>
-        <button class="playroom-bingo-button" id="bingo-button">🎯 BINGO! 🎯</button>
+        <div class="playroom-main">
+            <div class="playroom-board">
+                <div class="playroom-master-header">
+                    <span class="header-b">B</span>
+                    <span class="header-i">I</span>
+                    <span class="header-n">N</span>
+                    <span class="header-g">G</span>
+                    <span class="header-o">O</span>
+                </div>
+                <div class="playroom-master-grid" id="master-grid"></div>
+            </div>
+            <div class="playroom-sidebar">
+                <div id="playroom-status-box">SHUFFLING <span class="loader"></span></div>
+                <div class="playroom-current-call">
+                    <div>Current Call</div>
+                    <div class="ball" id="last-call">-</div>
+                </div>
+                <div class="playroom-last-3-calls" id="last-3-calls"></div>
+                <div class="playroom-card-container" id="playroom-card-container"></div>
+                <button class="bingo-button" id="bingo-button">🎯 BINGO! 🎯</button>
+            </div>
+        </div>
     </div>
 
-    <div id="game-popup" class="popup"><div id="popup-message"></div></div>
+    <div class="popup" id="game-popup"><div class="popup-message" id="popup-message"></div></div>
+    <div id="processing-popup" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#333; padding:20px; border-radius:16px; display:none; z-index:1001;">
+        <div>🔍 Verifying Bingo Claim...</div>
+        <div class="spinner" style="width:20px; height:20px; border:2px solid #fff; border-top-color:#f39c12; border-radius:50%; animation:spin 1s linear infinite; margin:10px auto;"></div>
+    </div>
+    <div class="modal" id="winnerModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:2000;">
+        <div style="background:linear-gradient(135deg,#667eea,#764ba2); border-radius:20px; padding:30px; text-align:center; max-width:500px;">
+            <h2>🎉 BINGO! 🎉</h2>
+            <div id="winner-summary"></div>
+            <div id="winners-container" style="max-height:300px; overflow-y:auto; margin:15px 0;"></div>
+            <button id="close-modal-button" style="padding:12px 24px; background:#f39c12; border:none; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Global game variables
+        let lockedCardId = null;
+        let myCardGrid = null;
+        let currentRoomState = null;
+        let bingoClaimed = false;
+        let isClaiming = false;
+        
+        // Get elements
+        const lobby = document.getElementById('lobby');
+        const playroom = document.getElementById('playroom');
+        const lobbyHeader = document.getElementById('lobby-header');
+        
+        function showLobby() {
+            lobby.classList.remove('hidden');
+            playroom.classList.add('hidden');
+            if (lobbyHeader) lobbyHeader.style.display = 'flex';
+            buildCardButtonsGrid();
+        }
+        
+        function showPlayroom(card) {
+            lobby.classList.add('hidden');
+            playroom.classList.remove('hidden');
+            buildMasterGrid();
+            if (card) {
+                myCardGrid = card.grid;
+                lockedCardId = card.id;
+                renderBingoCard(card);
+            }
+        }
+        
+        function buildCardButtonsGrid() {
+            const numberOfCards = parseInt(localStorage.getItem('numberOfCards')) || 500;
+            const container = document.getElementById('lobby-card-ids-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= numberOfCards; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'card-button available';
+                btn.textContent = i;
+                btn.setAttribute('data-card-id', i);
+                btn.onclick = () => lockCard(i);
+                container.appendChild(btn);
+            }
+        }
+        
+        async function lockCard(cardId) {
+            const myId = localStorage.getItem('myId');
+            try {
+                const response = await fetch(`${BACKEND_URL}/game/lockCard?cardId=${cardId}`, {
+                    method: 'POST',
+                    headers: { 'User-Id': myId }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.data) {
+                    highlightCardButton(cardId, 'locked-by-me');
+                    if (lockedCardId && lockedCardId !== cardId) {
+                        highlightCardButton(lockedCardId, 'available');
+                    }
+                    lockedCardId = cardId;
+                    renderLobbyCardPreview(data.data);
+                    showPopupMessage(`✅ Card ${cardId} locked!`);
+                } else {
+                    showPopupMessage(data.message || 'Failed to lock card');
+                }
+                if (data.wallet) updateWalletDisplay(data.wallet);
+            } catch(err) {
+                showPopupMessage('Network error');
+            }
+        }
+        
+        function highlightCardButton(cardId, className) {
+            const btn = document.querySelector(`.card-button[data-card-id="${cardId}"]`);
+            if (btn) {
+                btn.classList.remove('locked-by-me', 'locked-by-other', 'available');
+                btn.classList.add(className);
+            }
+        }
+        
+        function renderLobbyCardPreview(card) {
+            const container = document.getElementById('lobby-card-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            let grid;
+            if (typeof card.grid === 'string') grid = JSON.parse(card.grid);
+            else grid = card.grid;
+            
+            const table = document.createElement('div');
+            table.className = 'lobby-table';
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'lobby-table-cell';
+                    const val = grid[row][col];
+                    cell.textContent = val === 0 ? '⭐' : val;
+                    table.appendChild(cell);
+                }
+            }
+            container.appendChild(table);
+            const idDiv = document.createElement('div');
+            idDiv.className = 'lobby-card-id';
+            idDiv.textContent = `Board #: ${card.id}`;
+            container.appendChild(idDiv);
+        }
+        
+        function renderBingoCard(card) {
+            const container = document.getElementById('playroom-card-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            let grid;
+            if (typeof card.grid === 'string') grid = JSON.parse(card.grid);
+            else grid = card.grid;
+            
+            const bingoCard = document.createElement('div');
+            bingoCard.className = 'bingo-card-grid';
+            
+            const colors = { B: '#2ecc71', I: '#f39c12', N: '#3498db', G: '#e74c3c', O: '#9b59b6' };
+            ['B','I','N','G','O'].forEach(letter => {
+                const header = document.createElement('div');
+                header.className = 'header-cell';
+                header.textContent = letter;
+                header.style.backgroundColor = colors[letter];
+                bingoCard.appendChild(header);
+            });
+            
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const num = grid[row][col];
+                    const cell = document.createElement('div');
+                    if (num === 0) {
+                        cell.className = 'free-cell';
+                        cell.textContent = '⭐';
+                    } else {
+                        cell.className = 'num-cell';
+                        cell.textContent = num;
+                        cell.id = `num-cell-${num}`;
+                        cell.onclick = () => cell.classList.toggle('marked');
+                    }
+                    bingoCard.appendChild(cell);
+                }
+            }
+            container.appendChild(bingoCard);
+            
+            const idDiv = document.createElement('div');
+            idDiv.className = 'bingo-card-id';
+            idDiv.textContent = `Board #: ${card.id}`;
+            container.appendChild(idDiv);
+            
+            document.getElementById('bingo-button').onclick = claimBingo;
+        }
+        
+        function buildMasterGrid() {
+            const grid = document.getElementById('master-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (let row = 1; row <= 15; row++) {
+                const masterRow = document.createElement('div');
+                masterRow.className = 'master-row';
+                let number = row;
+                for (let col = 0; col < 5; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'master-cell';
+                    cell.id = `grid-cell-${number}`;
+                    cell.textContent = number;
+                    masterRow.appendChild(cell);
+                    number += 15;
+                }
+                grid.appendChild(masterRow);
+            }
+        }
+        
+        function updateWalletDisplay(balance) {
+            const walletEl = document.getElementById('lobby-wallet-value');
+            if (walletEl) walletEl.textContent = typeof balance === 'number' ? balance.toFixed(2) : balance;
+        }
+        
+        function updateLobbyDisplay(payload) {
+            showLobby();
+            const timerEl = document.getElementById('lobby-timer-value');
+            if (payload.lobbyTimer && timerEl) timerEl.textContent = payload.lobbyTimer;
+            if (payload.wallet) updateWalletDisplay(payload.wallet);
+            if (payload.cardOwners) {
+                Object.keys(payload.cardOwners).forEach(cardId => {
+                    const owner = payload.cardOwners[cardId];
+                    const myId = localStorage.getItem('myId');
+                    const btn = document.querySelector(`.card-button[data-card-id="${cardId}"]`);
+                    if (btn) {
+                        btn.classList.remove('locked-by-me', 'locked-by-other', 'available');
+                        if (owner == myId) btn.classList.add('locked-by-me');
+                        else if (owner) btn.classList.add('locked-by-other');
+                        else btn.classList.add('available');
+                    }
+                });
+                const count = Object.keys(payload.cardOwners).length;
+                const countEl = document.getElementById('lobby-player-count');
+                if (countEl) countEl.textContent = count;
+            }
+            if (payload.user && payload.user.card) {
+                lockedCardId = payload.user.card.id;
+                renderLobbyCardPreview(payload.user.card);
+            }
+        }
+        
+        function updatePlayroomDisplay(payload) {
+            const playersEl = document.getElementById('playroom-players');
+            if (playersEl) playersEl.textContent = payload.playerCount;
+            const rewardEl = document.getElementById('playroom-reward');
+            if (rewardEl) rewardEl.textContent = payload.reward;
+            const statusBox = document.getElementById('playroom-status-box');
+            if (statusBox && payload.status === 'PLAYING') {
+                statusBox.innerHTML = '🎲 GAME STARTED 🎲';
+                statusBox.classList.add('started');
+            }
+            if (payload.user && payload.user.card) {
+                renderBingoCard(payload.user.card);
+            }
+            if (payload.draws) {
+                highlightDraws(payload.draws);
+                highlightUserCard(payload.draws);
+                const callEl = document.getElementById('playroom-call-count');
+                if (callEl) callEl.textContent = payload.draws.length;
+            }
+        }
+        
+        function highlightDraws(draws) {
+            if (!draws || draws.length === 0) return;
+            const lastCall = draws[draws.length - 1];
+            const lastCallEl = document.getElementById('last-call');
+            if (lastCallEl) {
+                let letter = '';
+                if (lastCall < 16) letter = 'B';
+                else if (lastCall < 31) letter = 'I';
+                else if (lastCall < 46) letter = 'N';
+                else if (lastCall < 61) letter = 'G';
+                else letter = 'O';
+                lastCallEl.textContent = `${letter}-${lastCall}`;
+            }
+            
+            const lastThree = draws.slice(-3);
+            const container = document.getElementById('last-3-calls');
+            if (container) {
+                container.innerHTML = '';
+                lastThree.forEach(call => {
+                    const ball = document.createElement('div');
+                    ball.classList.add('history-ball');
+                    if (call < 16) { ball.classList.add('ball-b'); ball.textContent = `B-${call}`; }
+                    else if (call < 31) { ball.classList.add('ball-i'); ball.textContent = `I-${call}`; }
+                    else if (call < 46) { ball.classList.add('ball-n'); ball.textContent = `N-${call}`; }
+                    else if (call < 61) { ball.classList.add('ball-g'); ball.textContent = `G-${call}`; }
+                    else { ball.classList.add('ball-o'); ball.textContent = `O-${call}`; }
+                    container.appendChild(ball);
+                });
+            }
+            
+            for (let i = 1; i <= 75; i++) {
+                const cell = document.getElementById(`grid-cell-${i}`);
+                if (cell) {
+                    cell.classList.remove('called-new', 'called-old');
+                    if (draws.includes(i)) {
+                        if (i === lastCall) cell.classList.add('called-new');
+                        else cell.classList.add('called-old');
+                    }
+                }
+            }
+        }
+        
+        function highlightUserCard(draws) {
+            draws.forEach(num => {
+                const cell = document.getElementById(`num-cell-${num}`);
+                if (cell) cell.classList.add('marked');
+            });
+        }
+        
+        function claimBingo() {
+            if (bingoClaimed || isClaiming) {
+                showPopupMessage('Already claimed or claiming!');
+                return;
+            }
+            const callCount = parseInt(document.getElementById('playroom-call-count')?.textContent || '0');
+            if (callCount < 4) {
+                showPopupMessage('Wait for at least 4 numbers!');
+                return;
+            }
+            const confirmClaim = confirm('🎯 CLAIM BINGO?\n\n⚠️ WARNING: If invalid, you will be DISMISSED!\n\nAre you sure?');
+            if (!confirmClaim) return;
+            
+            isClaiming = true;
+            bingoClaimed = true;
+            const playerId = localStorage.getItem('myId');
+            const client = GameSession.getClient();
+            if (client && client.connected) {
+                const btn = document.getElementById('bingo-button');
+                if (btn) { btn.disabled = true; btn.textContent = '⏳ VERIFYING...'; }
+                showProcessingPopup();
+                client.send('/app/claimBingo', {}, JSON.stringify(playerId));
+                setTimeout(() => {
+                    if (isClaiming) {
+                        isClaiming = false;
+                        hideProcessingPopup();
+                        if (btn) { btn.disabled = false; btn.textContent = '🎯 BINGO! 🎯'; }
+                    }
+                }, 15000);
+            } else {
+                showPopupMessage('Connection error');
+                bingoClaimed = false;
+                isClaiming = false;
+            }
+        }
+        
+        function announceWinners(winResult) {
+            hideProcessingPopup();
+            const winners = winResult.winners || [];
+            const modal = document.getElementById('winnerModal');
+            const container = document.getElementById('winners-container');
+            const summary = document.getElementById('winner-summary');
+            if (!modal) return;
+            
+            container.innerHTML = '';
+            if (winners.length === 0) {
+                summary.innerHTML = '😔 No winners this round!';
+                container.innerHTML = '<div style="text-align:center; padding:20px;">Better luck next time!</div>';
+            } else {
+                summary.innerHTML = `🎉 ${winners.map(w => w.playerName).join(', ')} won! 🎉`;
+                winners.forEach(w => {
+                    const section = document.createElement('div');
+                    section.style.cssText = 'background:rgba(255,255,255,0.1); margin:10px; padding:15px; border-radius:12px;';
+                    section.innerHTML = `<div style="font-size:18px; font-weight:bold;">🎉 ${w.playerName} won ${w.winningAmount || 0} ETB!</div>`;
+                    container.appendChild(section);
+                });
+            }
+            modal.style.display = 'flex';
+            document.getElementById('close-modal-button').onclick = () => { modal.style.display = 'none'; reset(); };
+            
+            if (window.confetti) window.confetti({ particleCount: 200, spread: 100 });
+        }
+        
+        function showPopupMessage(msg) {
+            const popup = document.getElementById('game-popup');
+            const msgEl = document.getElementById('popup-message');
+            if (!popup) return;
+            msgEl.textContent = msg;
+            popup.style.display = 'block';
+            setTimeout(() => { popup.style.display = 'none'; }, 3000);
+        }
+        
+        function showProcessingPopup() {
+            const popup = document.getElementById('processing-popup');
+            if (popup) popup.style.display = 'flex';
+        }
+        
+        function hideProcessingPopup() {
+            const popup = document.getElementById('processing-popup');
+            if (popup) popup.style.display = 'none';
+        }
+        
+        function reset() {
+            lockedCardId = null;
+            myCardGrid = null;
+            bingoClaimed = false;
+            isClaiming = false;
+            closeModal();
+            showLobby();
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('winnerModal');
+            if (modal) modal.style.display = 'none';
+        }
+        
+        window.updateLobbyDisplay = updateLobbyDisplay;
+        window.updatePlayroomDisplay = updatePlayroomDisplay;
+        window.showPopupMessage = showPopupMessage;
+        window.announceWinners = announceWinners;
+        window.updateWalletDisplay = updateWalletDisplay;
+        window.highlightDraws = highlightDraws;
+        window.highlightUserCard = highlightUserCard;
+        
+        // Initialize when document ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM ready, initializing game...');
+            setTimeout(() => {
+                if (window.GameSession) {
+                    GameSession.login();
+                    fetchConfig();
+                    GameSession.join();
+                }
+            }, 100);
+        });
+    </script>
 </body>
 </html>
